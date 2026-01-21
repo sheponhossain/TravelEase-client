@@ -7,11 +7,15 @@ import { RouterProvider } from 'react-router/dom';
 import AuthProvider from './Routers/AuthProvider.jsx';
 import Navbar from './components/layout/Navbar.jsx';
 import Footer from './components/layout/Footer.jsx';
+import Hero from './components/Hero/Hero.jsx';
+import AllVehicles from './pages/AllVehicles.jsx';
+import TopCategories from './components/Top Categories/TopCategories.jsx';
+import FeaturedOwner from './components/Featured Owner/FeaturedOwner.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Footer />,
+    element: <FeaturedOwner />,
   },
 ]);
 

@@ -1,4 +1,5 @@
 import React from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import {
   FaPhoneAlt,
@@ -14,7 +15,7 @@ import {
 const Footer = () => {
   // Reusable Link Component with Hover Zoom/Lift
   const FooterLink = ({ children }) => (
-    <li className="hover:text-[#FF7000] cursor-pointer transition-all duration-300 hover:translate-x-2 hover:-translate-y-1 inline-block w-full text-gray-400">
+    <li className="hover:text-[#FF7000] cursor-pointer transition-all duration-500 hover:translate-x-1 hover:-translate-y-1 inline-block w-full text-gray-400">
       {children}
     </li>
   );
@@ -28,7 +29,7 @@ const Footer = () => {
         initial={{ y: 100, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.9, ease: 'easeOut' }}
+        transition={{ duration: 1, ease: 'easeOut' }}
         className="max-w-7xl mx-auto"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -88,7 +89,7 @@ const Footer = () => {
               <span className="absolute left-0 -bottom-2 h-1 w-10 bg-[#FF7000]"></span>
             </h3>
             <div className="space-y-4 mb-6 text-gray-400">
-              <div className="flex items-center gap-3 group cursor-pointer transition-transform hover:-translate-y-1">
+              <div className="flex items-center gap-3 group cursor-pointer transition-transform ">
                 <div className="bg-[#FF7000] p-2.5 rounded-md text-white">
                   <FaPhoneAlt size={14} />
                 </div>
@@ -96,7 +97,7 @@ const Footer = () => {
                   +1 (888) 760 1940
                 </span>
               </div>
-              <div className="flex items-center gap-3 group cursor-pointer transition-transform hover:-translate-y-1">
+              <div className="flex items-center gap-3 group cursor-pointer transition-transform ">
                 <div className="bg-[#FF7000] p-2.5 rounded-md text-white">
                   <FaEnvelope size={14} />
                 </div>

@@ -12,11 +12,12 @@ import AllVehicles from './pages/AllVehicles.jsx';
 import TopCategories from './components/Top Categories/TopCategories.jsx';
 import FeaturedOwner from './components/Featured Owner/FeaturedOwner.jsx';
 import Login from './Auth/Login.jsx';
+import Register from './Auth/Register.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Login />,
+    element: <Register />,
   },
 ]);
 

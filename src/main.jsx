@@ -13,11 +13,13 @@ import TopCategories from './components/Top Categories/TopCategories.jsx';
 import FeaturedOwner from './components/Featured Owner/FeaturedOwner.jsx';
 import Login from './Auth/Login.jsx';
 import Register from './Auth/Register.jsx';
+import VehicleDetails from './pages/VehiclesDetails.jsx';
+import MyBookings from './pages/MyBookings.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Register />,
+    element: <MyBookings />,
   },
 ]);
 

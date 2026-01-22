@@ -1,83 +1,88 @@
 import React, { useState } from 'react';
 import {
-  LayoutDashboard,
+  LayoutGrid,
   CalendarCheck,
+  Star,
   Heart,
-  Wallet,
+  MessageSquare,
+  Wallet as WalletIcon,
   CreditCard,
+  Settings,
 } from 'lucide-react';
-import DashboardStats from '../components/MyBookingDetailsLayOut/Dashboard/DashboardCard';
 import BookingsAndTransactions from '../components/MyBookingDetailsLayOut/Dashboard/BookingsAndTransactions';
-import MyBooking from '../components/MyBookingDetailsLayOut/MyBooking/MyBooking';
 import Wishlist from '../components/MyBookingDetailsLayOut/Wishlist/Wishlist';
+import Wallet from '../components/MyBookingDetailsLayOut/Wallet/Wallet';
+import MyBooking from '../components/MyBookingDetailsLayOut/MyBooking/MyBooking';
 
 const MyBookings = () => {
-  // ডিফল্টভাবে 'Dashboard' ট্যাব সেট করা হয়েছে
   const [activeTab, setActiveTab] = useState('Dashboard');
 
+  // স্ক্রিনশট অনুযায়ী আইটেম এবং আইকন সেট
   const navItems = [
-    { name: 'Dashboard', icon: <LayoutDashboard size={24} /> },
+    { name: 'Dashboard', icon: <LayoutGrid size={24} /> },
     { name: 'My Bookings', icon: <CalendarCheck size={24} /> },
     { name: 'Wishlist', icon: <Heart size={24} /> },
-    { name: 'My Wallet', icon: <Wallet size={24} /> },
+    { name: 'My Wallet', icon: <WalletIcon size={24} /> },
     { name: 'Payments', icon: <CreditCard size={24} /> },
   ];
 
-  // ট্যাব অনুযায়ী আলাদা আলাদা কন্টেন্ট রেন্ডার করার ফাংশন
   const renderTabContent = () => {
     switch (activeTab) {
       case 'Dashboard':
-        return (
-          <>
-            <DashboardStats />
-            <BookingsAndTransactions />
-          </>
-        );
+        return <BookingsAndTransactions />;
       case 'My Bookings':
-        return <MyBooking />;
+        return <MyBooking />; // আপনার তৈরি করা বড় টেবিল সেকশন
       case 'Wishlist':
         return <Wishlist />;
-      case 'My Wallet':
-        return (
-          <div className="p-10 text-center font-bold">
-            Wallet Details Coming Soon...
-          </div>
-        );
+      case 'My Wallet': // match the name exactly
+        return <Wallet />;
+      case 'Messages':
       case 'Payments':
+      case 'Settings':
         return (
-          <div className="p-10 text-center font-bold">
-            Payment History Coming Soon...
+          <div className="p-20 text-center flex flex-col items-center justify-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <Settings className="text-gray-300 animate-spin-slow" size={32} />
+            </div>
+            <h3 className="text-xl font-black text-[#040720]">
+              {activeTab} Coming Soon
+            </h3>
+            <p className="text-gray-400 font-bold">
+              We are working hard to bring this feature to you!
+            </p>
           </div>
         );
       default:
-        return <DashboardStats />;
+        return <BookingsAndTransactions />;
     }
   };
 
   return (
-    <div className="w-full bg-white py-8 border-b border-gray-100 mx-auto mt-8 rounded-2xl shadow-lg shadow-gray-200/50">
-      {/* Navigation Tabs */}
-      <div className="px-4 w-full mx-auto md:w-11/12 lg:w-10/12 xl:w-10/12 2xl:w-8/12 rounded-2xl mb-8">
-        <div className="flex w-full mx-auto flex-wrap items-center justify-center gap-4">
+    <div className="w-full bg-[#FBFBFB] min-h-screen py-10">
+      {/* Navigation Tabs Container */}
+      <div className="mx-auto w-full md:w-11/12 lg:w-10/12 mb-10 overflow-x-auto pb-4 scrollbar-hide">
+        <div className="flex items-center justify-start md:justify-center gap-4 min-w-max px-4">
           {navItems.map((item) => (
             <button
               key={item.name}
               onClick={() => setActiveTab(item.name)}
-              className={`flex flex-col items-center justify-center min-w-[120px] h-[120px] rounded-xl transition-all duration-300 gap-3
+              className={`flex flex-col items-center justify-center w-[140px] h-[130px] rounded-xl transition-all duration-300 gap-3 border
                 ${
                   activeTab === item.name
-                    ? 'bg-[#F5A64B] text-white shadow-lg shadow-orange-100'
-                    : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                    ? 'bg-[#FF7000] text-white border-[#F5A64B] shadow-xl shadow-orange-100 scale-105'
+                    : 'bg-[#F4F7F8] text-gray-500 border-transparent hover:bg-gray-100 hover:text-gray-700'
                 }`}
             >
               <div
                 className={
-                  activeTab === item.name ? 'text-white' : 'text-gray-600'
+                  activeTab === item.name
+                    ? 'text-white'
+                    : 'text-gray-400 font-bold'
                 }
               >
                 {item.icon}
               </div>
-              <span className="text-[14px] font-bold tracking-tight">
+              <span className="text-[14px] font-black tracking-tight leading-tight">
                 {item.name}
               </span>
             </button>
@@ -85,8 +90,10 @@ const MyBookings = () => {
         </div>
       </div>
 
-      {/* Dynamic Content Section */}
-      <div className="transition-all duration-500">{renderTabContent()}</div>
+      {/* Dynamic Content Section with Animation */}
+      <div className="w-full transition-opacity duration-300 ease-in-out">
+        {renderTabContent()}
+      </div>
     </div>
   );
 };

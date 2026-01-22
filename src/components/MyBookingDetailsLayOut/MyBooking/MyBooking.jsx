@@ -10,8 +10,9 @@ import {
   Trash2,
 } from 'lucide-react';
 import Buttons from '../../common/Buttons';
+import MyBookings from '../../../pages/MyBookings';
 
-const AllBookings = () => {
+const MyBooking = () => {
   const [activeFilter, setActiveFilter] = useState('All Bookings');
 
   const filters = [
@@ -280,4 +281,4 @@ const AllBookings = () => {
   );
 };
 
-export default AllBookings;
+export default MyBooking;

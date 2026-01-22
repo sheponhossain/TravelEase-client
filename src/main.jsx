@@ -15,11 +15,12 @@ import Login from './Auth/Login.jsx';
 import Register from './Auth/Register.jsx';
 import VehicleDetails from './pages/VehiclesDetails.jsx';
 import MyBookings from './pages/MyBookings.jsx';
+import UpdateVehicle from './components/Update Vehicle/UpdateVehicle.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <MyBookings />,
+    element: <UpdateVehicle />,
   },
 ]);
 

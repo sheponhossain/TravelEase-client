@@ -129,6 +129,7 @@ const ListingDetails = ({ listingId }) => {
   const displayData = defaultSpecs;
 
   const [content, setContent] = useState(''); // ডেটাবেস থেকে আসা টেক্সট
+  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   // eslint-disable-next-line no-unused-vars

@@ -2,15 +2,23 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { toast, Toaster } from 'react-hot-toast';
-import { Trash2, Edit3, Eye, Car, MapPin, DollarSign } from 'lucide-react';
+import {
+  Trash2,
+  Edit3,
+  Eye,
+  Car,
+  MapPin,
+  DollarSign,
+  Plus,
+} from 'lucide-react';
 import Buttons from '../components/common/Buttons';
+import Heading from '../Heading/Heading'; // আপনার হেডিং ইম্পোর্ট করুন
 
 const MyVehicles = ({ userEmail }) => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ১. লগইন করা ইউজারের ডাটা ফেচ করা
   useEffect(() => {
     const fetchMyVehicles = async () => {
       try {
@@ -27,13 +35,12 @@ const MyVehicles = ({ userEmail }) => {
     if (userEmail) fetchMyVehicles();
   }, [userEmail]);
 
-  // ২. ডিলিট লজিক (কনফার্মেশন টোস্ট সহ)
   const handleDelete = async (id) => {
     toast(
       (t) => (
-        <div className="flex flex-col gap-3">
-          <p className="font-bold text-[#1a1a1a]">
-            Are you sure you want to delete this?
+        <div className="flex flex-col gap-3 p-1">
+          <p className="font-black text-sm text-[#1a1a1a] uppercase tracking-tight">
+            Confirm Deletion?
           </p>
           <div className="flex gap-2">
             <button
@@ -44,114 +51,141 @@ const MyVehicles = ({ userEmail }) => {
                     `http://localhost:5000/api/vehicles/${id}`
                   );
                   setVehicles(vehicles.filter((v) => v._id !== id));
-                  toast.success('Vehicle deleted successfully!');
+                  toast.success('Vehicle removed!');
                 } catch (err) {
                   toast.error('Delete failed!');
                 }
               }}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs font-bold"
+              className="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest"
             >
-              Yes, Delete
+              Delete
             </button>
             <button
               onClick={() => toast.dismiss(t.id)}
-              className="bg-gray-100 px-4 py-2 rounded-lg text-xs font-bold"
+              className="bg-gray-100 text-gray-500 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest"
             >
               Cancel
             </button>
           </div>
         </div>
       ),
-      { duration: 5000 }
+      { duration: 5000, style: { borderRadius: '20px', padding: '16px' } }
     );
   };
 
-  //   if (loading)
-  //     return (
-  //       <div className="text-center py-20 font-black text-gray-400">
-  //         Loading your garage...
-  //       </div>
-  //     );
-
   return (
-    <div className="min-h-screen bg-[#F8F9FA] py-12 px-6">
-      <Toaster />
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-10 flex justify-between items-end">
-          <div>
-            <h2 className="text-4xl font-[1000] text-[#040720] tracking-tight">
-              My Vehicles
-            </h2>
-            <p className="text-gray-400 font-bold uppercase text-xs tracking-[0.3em] mt-2">
-              Manage your listed cars
-            </p>
+    <div className="min-h-screen bg-[#F8F9FA]">
+      <Toaster position="top-right" />
+
+      {/* 1. Hero Section - ছবির মতো ডার্ক থিম */}
+      <div className="bg-[#0a0a0a] pt-24 pb-32 text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+
+        {/* অরেঞ্জ গ্লো ইফেক্ট */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-10 pointer-events-none">
+          <div className="absolute top-[-20%] left-1/3 w-[500px] h-[500px] bg-[#FF7000] rounded-full blur-[120px]"></div>
+        </div>
+
+        <div className="relative z-10 flex flex-col items-center">
+          <Heading className="text-white">MY GARAGE</Heading>
+          {/* <p className="text-gray-500 font-[1000] uppercase text-[10px] tracking-[0.5em] mt-6 flex items-center gap-3">
+            Dashboard{' '}
+            <span className="w-1.5 h-1.5 bg-[#FF7000] rounded-full shadow-[0_0_8px_#FF7000]"></span>
+            Manage{' '}
+            <span className="w-1.5 h-1.5 bg-[#FF7000] rounded-full shadow-[0_0_8px_#FF7000]"></span>
+            Inventory
+          </p> */}
+        </div>
+      </div>
+
+      {/* 2. Content Section - ফ্লোটিং স্টাইল */}
+      <div className="max-w-7xl mx-auto px-6 -mt-14 relative z-20 pb-20">
+        {/* Summary Bar */}
+        <div className="bg-white p-4 rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 mb-12 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-4 ml-4">
+            <div className="bg-orange-50 p-3 rounded-2xl">
+              <Car className="text-[#FF7000]" size={24} />
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                Total Assets
+              </p>
+              <h4 className="text-xl font-black text-[#1a1a1a]">
+                {vehicles.length} Units Listed
+              </h4>
+            </div>
           </div>
-          <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100">
-            <span className="text-sm font-black text-[#1a1a1a]">
-              Total: {vehicles.length} Units
-            </span>
-          </div>
+          <Buttons
+            onClick={() => navigate('/add-vehicle')}
+            type="solid"
+            className="!rounded-2xl !py-4 !px-8 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 flex items-center gap-2"
+          >
+            <Plus size={16} /> Add New Vehicle
+          </Buttons>
         </div>
 
         {/* Vehicle Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {vehicles.map((vehicle) => (
             <div
               key={vehicle._id}
-              className="bg-white rounded-[2.5rem] p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all group"
+              className="bg-white rounded-[2.5rem] p-7 border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-500 group"
             >
               {/* Image Section */}
-              <div className="relative h-52 w-full bg-gray-50 rounded-[2rem] overflow-hidden mb-6">
+              <div className="relative h-56 w-full bg-gray-50 rounded-[2rem] overflow-hidden mb-8">
                 <img
                   src={
                     vehicle.coverImage || 'https://via.placeholder.com/400x300'
                   }
                   alt={vehicle.vehicleName}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm">
+                <div className="absolute top-5 left-5 bg-[#1a1a1a]/80 backdrop-blur-md text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em]">
                   {vehicle.category}
                 </div>
               </div>
 
               {/* Details */}
-              <div className="space-y-4">
-                <h3 className="text-2xl font-black text-[#1a1a1a] truncate">
-                  {vehicle.vehicleName}
-                </h3>
-
-                <div className="flex items-center justify-between text-gray-500 font-bold text-sm">
-                  <div className="flex items-center gap-2">
-                    <MapPin size={16} className="text-[#FF7000]" />
-                    <span>{vehicle.location}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-[#1a1a1a]">
-                    <DollarSign size={16} />
-                    <span className="text-lg font-black">
-                      {vehicle.pricePerDay}
-                    </span>
-                    <span className="text-[10px] uppercase text-gray-400">
-                      / day
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-[1000] text-[#1a1a1a] uppercase tracking-tight truncate">
+                    {vehicle.vehicleName}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-2">
+                    <MapPin size={14} className="text-[#FF7000]" />
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                      {vehicle.location}
                     </span>
                   </div>
                 </div>
 
-                <hr className="border-gray-50" />
+                <div className="flex items-center justify-between py-5 border-y border-gray-50">
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                    Daily Rate
+                  </p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-[1000] text-[#1a1a1a]">
+                      ${vehicle.pricePerDay}
+                    </span>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase">
+                      /Day
+                    </span>
+                  </div>
+                </div>
 
                 {/* Actions */}
                 <div className="flex items-center gap-3 pt-2">
                   <button
                     onClick={() => navigate(`/vehicle-details/${vehicle._id}`)}
-                    className="flex-1 bg-gray-50 hover:bg-gray-100 p-4 rounded-2xl transition-colors flex justify-center text-gray-600"
-                    title="View Details"
+                    className="flex-1 bg-gray-50 hover:bg-[#1a1a1a] hover:text-white p-4 rounded-2xl transition-all duration-300 flex justify-center text-gray-400"
+                    title="View"
                   >
                     <Eye size={20} />
                   </button>
 
                   <button
                     onClick={() => navigate(`/update-vehicle/${vehicle._id}`)}
-                    className="flex-1 bg-gray-50 hover:bg-blue-50 hover:text-blue-600 p-4 rounded-2xl transition-colors flex justify-center text-gray-600"
+                    className="flex-1 bg-gray-50 hover:bg-orange-50 hover:text-[#FF7000] p-4 rounded-2xl transition-all duration-300 flex justify-center text-gray-400"
                     title="Edit"
                   >
                     <Edit3 size={20} />
@@ -159,7 +193,7 @@ const MyVehicles = ({ userEmail }) => {
 
                   <button
                     onClick={() => handleDelete(vehicle._id)}
-                    className="flex-1 bg-red-50 hover:bg-red-500 hover:text-white p-4 rounded-2xl transition-all flex justify-center text-red-500"
+                    className="flex-1 bg-red-50 hover:bg-red-500 hover:text-white p-4 rounded-2xl transition-all duration-300 flex justify-center text-red-500"
                     title="Delete"
                   >
                     <Trash2 size={20} />
@@ -170,18 +204,20 @@ const MyVehicles = ({ userEmail }) => {
           ))}
 
           {/* Empty State */}
-          {vehicles.length === 0 && (
-            <div className="col-span-full py-20 bg-white rounded-[3rem] border-2 border-dashed border-gray-100 flex flex-col items-center">
-              <Car size={64} className="text-gray-100 mb-4" />
-              <p className="text-gray-400 font-bold">
-                You haven't added any vehicles yet.
+          {vehicles.length === 0 && !loading && (
+            <div className="col-span-full py-32 bg-white rounded-[3rem] border-2 border-dashed border-gray-100 flex flex-col items-center">
+              <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
+                <Car size={40} className="text-gray-200" />
+              </div>
+              <p className="text-gray-400 font-[1000] uppercase tracking-widest text-sm">
+                Your garage is empty
               </p>
               <Buttons
                 onClick={() => navigate('/add-vehicle')}
                 type="solid"
-                className="mt-6 !bg-[#1a1a1a] px-8 rounded-xl"
+                className="mt-8 !px-10 rounded-2xl shadow-xl shadow-orange-500/10"
               >
-                Add Your First Car
+                Add Your First Vehicle
               </Buttons>
             </div>
           )}

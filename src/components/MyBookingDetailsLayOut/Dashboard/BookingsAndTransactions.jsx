@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronDown, ArrowRight } from 'lucide-react';
 
 const BookingsAndTransactions = () => {
+  const [selected, setSelected] = useState('last-30-days');
   const lastBookings = [
     {
       id: 1,
@@ -97,11 +98,32 @@ const BookingsAndTransactions = () => {
               Last 5 Bookings
             </h3>
             <div className="flex items-center gap-4">
-              <button className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg text-sm font-semibold text-gray-600 border border-gray-100">
-                Last 30 Days <ChevronDown size={16} />
-              </button>
+              <div className="relative inline-block">
+                <select
+                  value={selected}
+                  onChange={(e) => setSelected(e.target.value)}
+                  className="appearance-none bg-white border border-gray-100 pl-4 pr-10 py-2 rounded-xl 
+                   text-[11px] font-[1000] uppercase tracking-widest text-[#1a1a1a] 
+                   cursor-pointer outline-none hover:border-[#FF7000] transition-all 
+                   shadow-sm focus:ring-2 ring-orange-50"
+                >
+                  <option value="this-week" className="font-bold py-2">
+                    This Week
+                  </option>
+                  <option value="this-month" className="font-bold py-2">
+                    This Month
+                  </option>
+                  <option value="last-30-days" className="font-bold py-2">
+                    Last 30 Days
+                  </option>
+                </select>
+
+                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                  <ChevronDown size={14} className="text-[#FF7000]" />
+                </div>
+              </div>
               <a
-                href="#"
+                href="/allvehicles"
                 className="text-sm font-bold text-teal-600 hover:underline"
               >
                 View all Bookings
@@ -176,9 +198,32 @@ const BookingsAndTransactions = () => {
             <h3 className="text-xl font-bold text-[#040720]">
               Recent Transaction
             </h3>
-            <button className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg text-sm font-semibold text-gray-600 border border-gray-100">
-              Last 30 Days <ChevronDown size={16} />
-            </button>
+            <div className="relative inline-block">
+              {/* কাস্টম ডিজাইন করা সিলেক্ট বক্স */}
+              <select
+                value={selected}
+                onChange={(e) => setSelected(e.target.value)}
+                className="appearance-none bg-white border border-gray-100 pl-4 pr-10 py-2 rounded-xl 
+                   text-[11px] font-[1000] uppercase tracking-widest text-[#1a1a1a] 
+                   cursor-pointer outline-none hover:border-[#FF7000] transition-all 
+                   shadow-sm focus:ring-2 ring-orange-50"
+              >
+                <option value="this-week" className="font-bold py-2">
+                  This Week
+                </option>
+                <option value="this-month" className="font-bold py-2">
+                  This Month
+                </option>
+                <option value="last-30-days" className="font-bold py-2">
+                  Last 30 Days
+                </option>
+              </select>
+
+              {/* কাস্টম অ্যারো আইকন যা ক্লিক করা আটকাবে না */}
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <ChevronDown size={14} className="text-[#FF7000]" />
+              </div>
+            </div>
           </div>
 
           <div className="p-4 space-y-4">

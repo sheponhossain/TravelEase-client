@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import {
   LayoutGrid,
   CalendarCheck,
-  Star,
   Heart,
-  MessageSquare,
   Wallet as WalletIcon,
   CreditCard,
   Settings,
@@ -13,11 +11,11 @@ import BookingsAndTransactions from '../components/MyBookingDetailsLayOut/Dashbo
 import Wishlist from '../components/MyBookingDetailsLayOut/Wishlist/Wishlist';
 import Wallet from '../components/MyBookingDetailsLayOut/Wallet/Wallet';
 import MyBooking from '../components/MyBookingDetailsLayOut/MyBooking/MyBooking';
+import Heading from '../Heading/Heading';
 
 const MyBookings = () => {
   const [activeTab, setActiveTab] = useState('Dashboard');
 
-  // স্ক্রিনশট অনুযায়ী আইটেম এবং আইকন সেট
   const navItems = [
     { name: 'Dashboard', icon: <LayoutGrid size={24} /> },
     { name: 'My Bookings', icon: <CalendarCheck size={24} /> },
@@ -31,58 +29,69 @@ const MyBookings = () => {
       case 'Dashboard':
         return <BookingsAndTransactions />;
       case 'My Bookings':
-        return <MyBooking />; // আপনার তৈরি করা বড় টেবিল সেকশন
+        return <MyBooking />;
       case 'Wishlist':
         return <Wishlist />;
-      case 'My Wallet': // match the name exactly
+      case 'My Wallet':
         return <Wallet />;
-      case 'Messages':
-      case 'Payments':
-      case 'Settings':
+      default:
         return (
           <div className="p-20 text-center flex flex-col items-center justify-center">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <Settings className="text-gray-300 animate-spin-slow" size={32} />
+              <Settings className="text-gray-300" size={32} />
             </div>
             <h3 className="text-xl font-black text-[#040720]">
               {activeTab} Coming Soon
             </h3>
-            <p className="text-gray-400 font-bold">
-              We are working hard to bring this feature to you!
-            </p>
           </div>
         );
-      default:
-        return <BookingsAndTransactions />;
     }
   };
 
   return (
-    <div className="w-full bg-[#FBFBFB] min-h-screen py-10">
-      {/* Navigation Tabs Container */}
-      <div className="mx-auto w-full md:w-11/12 lg:w-10/12 mb-10 overflow-x-auto pb-4 scrollbar-hide">
+    <div className="w-full bg-[#FBFBFB] min-h-screen">
+      {/* 1. Dynamic Header Section - ডার্ক থিম */}
+      <div className="bg-[#0a0a0a] pt-24 pb-32 text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+
+        {/* অরেঞ্জ গ্লো */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-10 pointer-events-none">
+          <div className="absolute top-[-20%] left-1/3 w-[500px] h-[500px] bg-[#FF7000] rounded-full blur-[120px]"></div>
+        </div>
+
+        <div className="relative z-10 flex flex-col items-center">
+          {/* ডাইনামিক হেডিং - activeTab অনুযায়ী নাম পাল্টাবে */}
+          <Heading className="text-white uppercase">{activeTab}</Heading>
+
+          <p className="text-gray-500 font-[1000] uppercase text-[10px] tracking-[0.5em] mt-6 flex items-center gap-3">
+            User <span className="w-1.5 h-1.5 bg-[#FF7000] rounded-full"></span>
+            Profile{' '}
+            <span className="w-1.5 h-1.5 bg-[#FF7000] rounded-full"></span>
+            {activeTab}
+          </p>
+        </div>
+      </div>
+
+      {/* 2. Navigation Tabs - ফ্লোটিং স্টাইল */}
+      <div className="mx-auto w-full md:w-11/12 lg:w-10/12 -mt-16 mb-10 relative z-20 overflow-x-auto pb-4 scrollbar-hide">
         <div className="flex items-center justify-start md:justify-center gap-4 min-w-max px-4">
           {navItems.map((item) => (
             <button
               key={item.name}
               onClick={() => setActiveTab(item.name)}
-              className={`flex flex-col items-center justify-center w-[140px] h-[130px] rounded-xl transition-all duration-300 gap-3 border
+              className={`flex flex-col items-center justify-center w-[140px] h-[130px] rounded-[2rem] transition-all duration-500 gap-3 border-2
                 ${
                   activeTab === item.name
-                    ? 'bg-[#FF7000] text-white border-[#F5A64B] shadow-xl shadow-orange-100 scale-105'
-                    : 'bg-[#F4F7F8] text-gray-500 border-transparent hover:bg-gray-100 hover:text-gray-700'
+                    ? 'bg-[#FF7000] text-white border-[#FF7000] shadow-2xl shadow-orange-500/20 scale-105'
+                    : 'bg-white text-gray-400 border-gray-50 hover:border-gray-200 hover:text-gray-600 shadow-sm'
                 }`}
             >
               <div
-                className={
-                  activeTab === item.name
-                    ? 'text-white'
-                    : 'text-gray-400 font-bold'
-                }
+                className={`${activeTab === item.name ? 'text-white' : 'text-gray-300 transition-colors'}`}
               >
                 {item.icon}
               </div>
-              <span className="text-[14px] font-black tracking-tight leading-tight">
+              <span className="text-[12px] font-black tracking-tight uppercase">
                 {item.name}
               </span>
             </button>
@@ -90,8 +99,8 @@ const MyBookings = () => {
         </div>
       </div>
 
-      {/* Dynamic Content Section with Animation */}
-      <div className="w-full transition-opacity duration-300 ease-in-out">
+      {/* 3. Dynamic Content Section */}
+      <div className="w-full container mx-auto px-4 pb-20">
         {renderTabContent()}
       </div>
     </div>

@@ -16,6 +16,14 @@ import {
   Settings,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import {
+  MdArrowBackIosNew,
+  MdArrowForward,
+  MdArrowForwardIos,
+  MdOutlineArrowForward,
+} from 'react-icons/md';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { NavLink } from 'react-router';
 
 const AllVehicles = () => {
   const [pickupDate, setPickupDate] = useState(new Date('2023-11-04'));
@@ -280,9 +288,11 @@ const AllVehicles = () => {
                     </div>
                   </div>
 
-                  <button className="w-full bg-[#1b1b1b] text-white py-3 rounded-lg mt-4 font-bold flex items-center justify-center gap-2 group-hover:bg-[#FF7000] transition-colors">
-                    <Calendar className="w-4 h-4" /> Rent Now
-                  </button>
+                  <NavLink to={'/VehicleDetails'}>
+                    <button className="w-full bg-[#1b1b1b] text-white py-3 rounded-lg mt-4 font-bold flex items-center justify-center gap-2 group-hover:bg-[#FF7000] transition-colors">
+                      <Calendar className="w-4 h-4" /> Rent Now
+                    </button>
+                  </NavLink>
                 </div>
               </motion.div>
             ))}
@@ -290,19 +300,21 @@ const AllVehicles = () => {
 
           {/* Pagination */}
           <div className="flex justify-center mt-12 gap-2">
-            <button className="p-3 border rounded hover:bg-gray-100">
-              Prev
+            <button className="p-2 px-4 mr-4 flex items-center gap-2 border rounded-lg hover:bg-gray-100">
+              <FaArrowLeft />
+              prev
             </button>
             {[1, 2, 3].map((n) => (
               <button
                 key={n}
-                className={`w-10 h-10 border rounded ${n === 2 ? 'bg-[#008099] text-white' : 'hover:bg-gray-100'}`}
+                className={`w-10 h-10 border rounded-lg ${n === 2 ? 'bg-[#008099] text-white' : 'hover:bg-gray-100'}`}
               >
                 {n}
               </button>
             ))}
-            <button className="p-3 border rounded hover:bg-gray-100">
+            <button className="p-2 px-4 ml-4 flex items-center gap-2 border rounded-lg hover:bg-gray-100">
               Next
+              <FaArrowRight />
             </button>
           </div>
         </section>

@@ -111,9 +111,6 @@ const MyBooking = () => {
               <button className="p-2.5 bg-orange-100 text-orange-500">
                 <LayoutGrid size={18} />
               </button>
-              <button className="p-2.5 bg-white text-gray-400">
-                <List size={18} />
-              </button>
             </div>
           </div>
         </div>

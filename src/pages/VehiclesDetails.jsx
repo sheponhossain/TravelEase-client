@@ -28,7 +28,7 @@ import Buttons from '../components/common/Buttons';
 import confetti from 'canvas-confetti';
 import Flatpickr from 'react-flatpickr';
 import AddVehicleModal from '../components/common/AddVehicleModal';
-const ListingDetails = ({ listingId }) => {
+const VehicleDetails = ({ listingId }) => {
   const fireConfetti = () => {
     confetti({
       particleCount: 100,
@@ -596,4 +596,4 @@ const ListingDetails = ({ listingId }) => {
   );
 };
 
-export default ListingDetails;
+export default VehicleDetails;

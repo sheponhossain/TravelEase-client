@@ -110,7 +110,9 @@ const Wallet = () => {
                 </div>
                 {/* ২. বাটনে onClick ইভেন্ট যোগ করা হয়েছে */}
                 <Buttons
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
                   type="solid"
                   className="w-full !py-4 font-black rounded-2xl shadow-md transition-transform active:scale-[0.98]"
                 >

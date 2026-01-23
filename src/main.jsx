@@ -13,14 +13,72 @@ import TopCategories from './components/Top Categories/TopCategories.jsx';
 import FeaturedOwner from './components/Featured Owner/FeaturedOwner.jsx';
 import Login from './Auth/Login.jsx';
 import Register from './Auth/Register.jsx';
-import VehicleDetails from './pages/VehiclesDetails.jsx';
 import MyBookings from './pages/MyBookings.jsx';
 import UpdateVehicle from './components/Update Vehicle/UpdateVehicle.jsx';
+import Page404 from './pages/NotFound.jsx';
+import Root from './Root/Root.jsx';
+import VehicleDetails from './pages/VehiclesDetails.jsx';
+import AddVehicles from './pages/AddVehicles.jsx';
+import { ToastContainer } from 'react-toastify';
+import MyVehicles from './pages/MyVehicles.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <UpdateVehicle />,
+    element: <Root />,
+    children: [
+      {
+        index: true,
+        element: (
+          <>
+            <Hero />
+            <TopCategories />
+            <AllVehicles />
+            <FeaturedOwner />
+          </>
+        ),
+      },
+      {
+        path: '/allvehicles',
+        element: <AllVehicles />,
+      },
+      {
+        path: '/addvehicle',
+        element: <AddVehicles />,
+      },
+      {
+        path: '/MyVehicles',
+        element: <MyVehicles />,
+      },
+      {
+        path: '/login',
+        element: <Login />,
+      },
+      {
+        path: '/register',
+        element: <Register />,
+      },
+      {
+        path: '/vehicle/:id',
+        element: <VehicleDetails />,
+      },
+      {
+        path: '/mybookings',
+        element: <MyBookings />,
+      },
+      {
+        path: '/updatevehicle/:id',
+        element: <UpdateVehicle />,
+      },
+      {
+        path: '*',
+        element: <Page404 />,
+      },
+      {
+        path: 'VehicleDetails',
+        element: <VehicleDetails />,
+      },
+    ],
   },
 ]);
 
@@ -28,6 +86,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
       <RouterProvider router={router} />
+      <ToastContainer />
     </AuthProvider>
   </StrictMode>
 );

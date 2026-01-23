@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { X, CreditCard, Plus } from 'lucide-react';
+import { toast } from 'react-toastify';
+import Buttons from '../Buttons';
 
 const AddPaymentModal = ({ isOpen, onClose }) => {
   const [selectedMethod, setSelectedMethod] = useState('visa');
@@ -123,15 +125,36 @@ const AddPaymentModal = ({ isOpen, onClose }) => {
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <button className="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:shadow-gray-200 transition-all active:scale-[0.98]">
+            <Buttons
+              type="solid"
+              onClick={() => {
+                toast.success('Funds Added to Wallet!', {
+                  duration: 3000,
+                  position: 'top-right',
+                  style: {
+                    background: '#1a1a1a', // আপনার বাটনের কালারের সাথে মিল রেখে ডার্ক থিম
+                    color: '#fff',
+                    borderRadius: '16px',
+                    fontWeight: 'bold',
+                    padding: '16px',
+                  },
+                  iconTheme: {
+                    primary: '#FF7000', // আপনার অরেঞ্জ কালারটি আইকনে ব্যবহার করা হয়েছে
+                    secondary: '#fff',
+                  },
+                });
+              }}
+              className="w-full cursor-pointer"
+            >
               Add to Wallet
-            </button>
-            <button
+            </Buttons>
+            <Buttons
+              type="outline"
               onClick={onClose}
-              className="w-full py-2 text-red-500 font-bold text-sm hover:underline"
+              className="w-full py-2 text-red-500 font-bold text-sm cursor-pointer"
             >
               Cancel
-            </button>
+            </Buttons>
           </div>
         </div>
       </div>

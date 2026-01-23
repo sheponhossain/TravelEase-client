@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 // 1. Video-ti import korun
 import carVideo from '../../assets/car-drift.mp4';
 import Buttons from '../common/Buttons';
+import { NavLink } from 'react-router';
 
 const Hero = () => {
   return (
@@ -39,9 +40,11 @@ const Hero = () => {
             have the perfect ride for you.
           </p>
           <nav className="flex gap-4 items-center mt-4 ">
-            <Buttons className="text-sm cursor-pointer" type="solid">
-              All Vehicles
-            </Buttons>
+            <NavLink to="/allvehicles">
+              <Buttons className="text-sm cursor-pointer" type="solid">
+                All Vehicles
+              </Buttons>
+            </NavLink>
           </nav>
         </motion.div>
       </div>

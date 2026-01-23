@@ -3,6 +3,12 @@ import React from 'react';
 const FeaturedOwner = () => {
   return (
     <section className="container mx-auto px-4 my-20">
+      <div className="flex flex-col justify-between items-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-900">Top Categories</h2>
+        <p className="text-gray-500 mt-1">
+          Explore our wide range of vehicles by type
+        </p>
+      </div>
       <div className="bg-[#0a0a0a] rounded-2xl overflow-hidden flex flex-col md:flex-row items-center">
         <div className="w-full md:w-1/2 h-64 md:h-auto">
           <img

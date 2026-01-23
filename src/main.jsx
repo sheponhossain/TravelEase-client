@@ -33,7 +33,6 @@ const router = createBrowserRouter([
           <>
             <Hero />
             <TopCategories />
-            <AllVehicles />
             <FeaturedOwner />
           </>
         ),

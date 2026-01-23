@@ -50,29 +50,15 @@ const MyBookings = () => {
 
   return (
     <div className="w-full bg-[#FBFBFB] min-h-screen">
-      {/* 1. Dynamic Header Section - ডার্ক থিম */}
       <div className="bg-[#0a0a0a] pt-24 pb-32 text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-
-        {/* অরেঞ্জ গ্লো */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-10 pointer-events-none">
           <div className="absolute top-[-20%] left-1/3 w-[500px] h-[500px] bg-[#FF7000] rounded-full blur-[120px]"></div>
         </div>
 
         <div className="relative z-10 flex flex-col items-center">
-          {/* ডাইনামিক হেডিং - activeTab অনুযায়ী নাম পাল্টাবে */}
           <Heading className="text-white uppercase">{activeTab}</Heading>
-
-          <p className="text-gray-500 font-[1000] uppercase text-[10px] tracking-[0.5em] mt-6 flex items-center gap-3">
-            User <span className="w-1.5 h-1.5 bg-[#FF7000] rounded-full"></span>
-            Profile{' '}
-            <span className="w-1.5 h-1.5 bg-[#FF7000] rounded-full"></span>
-            {activeTab}
-          </p>
         </div>
       </div>
-
-      {/* 2. Navigation Tabs - ফ্লোটিং স্টাইল */}
       <div className="mx-auto w-full md:w-11/12 lg:w-10/12 -mt-16 mb-10 relative z-20 overflow-x-auto pb-4 scrollbar-hide">
         <div className="flex items-center justify-start md:justify-center gap-4 min-w-max px-4">
           {navItems.map((item) => (
@@ -98,8 +84,6 @@ const MyBookings = () => {
           ))}
         </div>
       </div>
-
-      {/* 3. Dynamic Content Section */}
       <div className="w-full container mx-auto px-4 pb-20">
         {renderTabContent()}
       </div>

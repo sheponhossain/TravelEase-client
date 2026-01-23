@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 import {
@@ -10,12 +10,16 @@ import {
   User,
   ChevronLeft,
   CheckCircle,
+  Tags,
 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import Buttons from '../components/common/Buttons';
 import Heading from '../Heading/Heading';
 
-const AddVehicle = ({ userEmail, userName }) => {
+const AddVehicles = ({ userEmail }) => {
+  const staticEmail = 'shepon@gmail.com';
+  const userName = 'Shepon';
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
@@ -23,12 +27,13 @@ const AddVehicle = ({ userEmail, userName }) => {
 
   const [formData, setFormData] = useState({
     vehicleName: '',
-    ownerName: userName || '', // লগড ইন ইউজারের নাম অটো আসবে
-    category: 'Sedan',
+    owner: userName,
+    categories: 'Sedan',
     pricePerDay: '',
     location: '',
     availability: 'Available',
     description: '',
+    userEmail: staticEmail,
   });
 
   const handleChange = (e) => {
@@ -45,17 +50,23 @@ const AddVehicle = ({ userEmail, userName }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!imageFile) return toast.error('Please upload a cover image!');
+
     setLoading(true);
 
     try {
-      const data = new FormData();
-      data.append('file', imageFile);
-      data.append('upload_preset', 'your_preset');
-
       const vehicleData = {
-        ...formData,
-        userEmail: userEmail,
+        vehicleName: formData.vehicleName,
+        owner: formData.owner,
+        categories: formData.categories,
+        pricePerDay: Number(formData.pricePerDay),
+        location: formData.location,
+        availability: formData.availability,
+        description: formData.description,
         coverImage: preview,
+        userEmail: staticEmail,
+        createdAt: new Date().toISOString(),
       };
 
       const response = await axios.post(
@@ -64,34 +75,40 @@ const AddVehicle = ({ userEmail, userName }) => {
       );
 
       if (response.data) {
-        toast.success('Vehicle added successfully!');
-        setTimeout(() => navigate('/my-vehicles'), 2000);
+        toast.success('Vehicle registered successfully!');
+        setTimeout(() => navigate('/myvehicles'), 2000);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Something went wrong!');
+      toast.error(
+        error.response?.data?.message || 'Server Error! Check Port 5000'
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA]">
+    <div className="min-h-screen bg-[#F8F9FA] text-left">
       <Toaster position="top-right" />
 
       {/* Hero Section */}
       <div className="bg-[#0a0a0a] pt-20 pb-28 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-20 pointer-events-none">
-          {/* <div className="absolute top-[-10%] left-1/4 w-96 h-96 bg-[#FF7000] rounded-full blur-[150px]"></div> */}
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10 text-center">
+        <div className="container mx-auto px-4 relative z-10">
           <button
             onClick={() => navigate(-1)}
-            className="absolute left-4 top-0 p-3 bg-white/10 backdrop-blur-md rounded-2xl hover:bg-[#FF7000] transition-all text-white border border-white/10 group"
+            className="absolute left-4 top-0 p-3 bg-white/10 backdrop-blur-md rounded-2xl text-white border border-white/20 hover:bg-[#FF4500] transition-all"
           >
             <ChevronLeft size={20} />
           </button>
           <Heading className="text-white">ADD VEHICLE</Heading>
+
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <p className="text-white/60 text-[11px] font-medium tracking-wider uppercase">
+              Registering with:{' '}
+              <span className="text-white">{staticEmail}</span>
+            </p>
+          </div>
         </div>
       </div>
 
@@ -100,10 +117,10 @@ const AddVehicle = ({ userEmail, userName }) => {
           onSubmit={handleSubmit}
           className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8"
         >
-          {/* Image Upload Box */}
+          {/* Image Upload Area */}
           <div className="lg:col-span-4">
-            <div className="bg-white p-6 rounded-[2.5rem] shadow-2xl shadow-black/5 border border-gray-100 sticky top-24">
-              <div className="relative group overflow-hidden rounded-[2rem] border-2 border-dashed border-gray-200 hover:border-[#FF7000] transition-all aspect-square flex flex-col items-center justify-center bg-gray-50">
+            <div className="bg-white p-6 rounded-[2.5rem] shadow-xl border border-gray-100 sticky top-24">
+              <div className="relative group overflow-hidden rounded-[2rem] border-2 border-dashed border-gray-200 hover:border-[#FF7000] aspect-square flex flex-col items-center justify-center bg-gray-50">
                 {preview ? (
                   <img
                     src={preview}
@@ -112,12 +129,9 @@ const AddVehicle = ({ userEmail, userName }) => {
                   />
                 ) : (
                   <div className="flex flex-col items-center text-gray-400">
-                    <Upload
-                      size={40}
-                      className="mb-3 group-hover:text-[#FF7000]"
-                    />
-                    <span className="text-[10px] font-black uppercase">
-                      Cover Photo
+                    <Upload size={40} className="mb-3" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">
+                      Upload Cover Image
                     </span>
                   </div>
                 )}
@@ -131,11 +145,10 @@ const AddVehicle = ({ userEmail, userName }) => {
             </div>
           </div>
 
-          {/* Form Fields */}
+          {/* Form Fields Area */}
           <div className="lg:col-span-8">
-            <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl shadow-black/5 border border-gray-100">
+            <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-gray-100">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Vehicle Name */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
                     Vehicle Name
@@ -151,13 +164,12 @@ const AddVehicle = ({ userEmail, userName }) => {
                       required
                       value={formData.vehicleName}
                       onChange={handleChange}
-                      placeholder="Chevrolet Camaro"
-                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none transition-all"
+                      placeholder="Tesla Model 3"
+                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
                     />
                   </div>
                 </div>
 
-                {/* Owner Name (Auto-filled but editable) */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
                     Owner Name
@@ -169,20 +181,42 @@ const AddVehicle = ({ userEmail, userName }) => {
                     />
                     <input
                       type="text"
-                      name="ownerName"
+                      name="owner"
                       required
-                      value={formData.ownerName}
+                      value={formData.owner}
                       onChange={handleChange}
-                      placeholder="John Doe"
-                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none transition-all"
+                      placeholder="Owner Name"
+                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
                     />
                   </div>
                 </div>
 
-                {/* Daily Price */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                    Daily Price ($)
+                    Main Category
+                  </label>
+                  <div className="relative">
+                    <Tags
+                      className="absolute left-5 top-1/2 -translate-y-1/2 text-[#FF7000]"
+                      size={18}
+                    />
+                    <select
+                      name="categories"
+                      value={formData.categories}
+                      onChange={handleChange}
+                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none appearance-none cursor-pointer"
+                    >
+                      <option value="Electric">Electric</option>
+                      <option value="Sedan">Sedan</option>
+                      <option value="SUV">SUV</option>
+                      <option value="Van">Van</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                    Price Per Day ($)
                   </label>
                   <div className="relative">
                     <DollarSign
@@ -195,37 +229,12 @@ const AddVehicle = ({ userEmail, userName }) => {
                       required
                       value={formData.pricePerDay}
                       onChange={handleChange}
-                      placeholder="350"
-                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none transition-all"
+                      placeholder="70"
+                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
                     />
                   </div>
                 </div>
 
-                {/* Category */}
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                    Category
-                  </label>
-                  <div className="relative">
-                    <select
-                      name="category"
-                      value={formData.category}
-                      onChange={handleChange}
-                      className="w-full bg-gray-50 border-none px-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none cursor-pointer appearance-none"
-                    >
-                      <option>Sedan</option>
-                      <option>SUV</option>
-                      <option>Luxury</option>
-                      <option>Sports</option>
-                    </select>
-                    <ChevronLeft
-                      className="absolute right-5 top-1/2 -translate-y-1/2 -rotate-90 text-gray-300 pointer-events-none"
-                      size={16}
-                    />
-                  </div>
-                </div>
-
-                {/* Location */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
                     Location
@@ -241,16 +250,15 @@ const AddVehicle = ({ userEmail, userName }) => {
                       required
                       value={formData.location}
                       onChange={handleChange}
-                      placeholder="Miami, FL"
-                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none transition-all"
+                      placeholder="Dhaka, Bangladesh"
+                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
                     />
                   </div>
                 </div>
 
-                {/* Availability */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                    Availability Status
+                    Availability
                   </label>
                   <div className="relative">
                     <CheckCircle
@@ -261,19 +269,18 @@ const AddVehicle = ({ userEmail, userName }) => {
                       name="availability"
                       value={formData.availability}
                       onChange={handleChange}
-                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none cursor-pointer appearance-none"
+                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none appearance-none cursor-pointer"
                     >
-                      <option value="Available">Available Now</option>
+                      <option value="Available">Available</option>
                       <option value="Booked">Booked</option>
                     </select>
                   </div>
                 </div>
               </div>
 
-              {/* Description */}
               <div className="mt-8 space-y-3">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                  Car Description
+                  Description
                 </label>
                 <div className="relative">
                   <FileText
@@ -285,27 +292,19 @@ const AddVehicle = ({ userEmail, userName }) => {
                     value={formData.description}
                     onChange={handleChange}
                     rows="4"
-                    placeholder="Briefly describe your vehicle..."
+                    placeholder="Comfortable 5-seater with A/C..."
                     className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-medium text-gray-600 outline-none transition-all resize-none"
                   ></textarea>
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mt-12">
                 <Buttons
                   type="solid"
                   disabled={loading}
-                  className="flex-grow !py-5 text-xs font-black tracking-[0.2em] uppercase shadow-xl shadow-orange-500/20"
+                  className="flex-grow !py-5 text-xs font-black uppercase tracking-widest"
                 >
-                  {loading ? 'Registering...' : 'Confirm Registration'}
-                </Buttons>
-                <Buttons
-                  type="outline"
-                  onClick={() => navigate(-1)}
-                  className="!py-5 px-10 text-xs font-black tracking-widest uppercase"
-                >
-                  Cancel
+                  {loading ? 'Processing...' : 'Confirm Registration'}
                 </Buttons>
               </div>
             </div>
@@ -316,4 +315,4 @@ const AddVehicle = ({ userEmail, userName }) => {
   );
 };
 
-export default AddVehicle;
+export default AddVehicles;

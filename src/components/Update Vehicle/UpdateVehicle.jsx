@@ -32,6 +32,7 @@ const UpdateVehicle = ({ existingData, onCancel, onUpdate }) => {
 
   useEffect(() => {
     if (existingData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         name: existingData.name || '',
         price: existingData.price || '',

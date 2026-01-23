@@ -12,7 +12,7 @@ import {
   Plus,
 } from 'lucide-react';
 import Buttons from '../components/common/Buttons';
-import Heading from '../Heading/Heading'; // আপনার হেডিং ইম্পোর্ট করুন
+import Heading from '../Heading/Heading';
 
 const MyVehicles = ({ userEmail }) => {
   const [vehicles, setVehicles] = useState([]);
@@ -77,30 +77,17 @@ const MyVehicles = ({ userEmail }) => {
     <div className="min-h-screen bg-[#F8F9FA]">
       <Toaster position="top-right" />
 
-      {/* 1. Hero Section - ছবির মতো ডার্ক থিম */}
       <div className="bg-[#0a0a0a] pt-24 pb-32 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-
-        {/* অরেঞ্জ গ্লো ইফেক্ট */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-10 pointer-events-none">
           <div className="absolute top-[-20%] left-1/3 w-[500px] h-[500px] bg-[#FF7000] rounded-full blur-[120px]"></div>
         </div>
 
         <div className="relative z-10 flex flex-col items-center">
           <Heading className="text-white">MY GARAGE</Heading>
-          {/* <p className="text-gray-500 font-[1000] uppercase text-[10px] tracking-[0.5em] mt-6 flex items-center gap-3">
-            Dashboard{' '}
-            <span className="w-1.5 h-1.5 bg-[#FF7000] rounded-full shadow-[0_0_8px_#FF7000]"></span>
-            Manage{' '}
-            <span className="w-1.5 h-1.5 bg-[#FF7000] rounded-full shadow-[0_0_8px_#FF7000]"></span>
-            Inventory
-          </p> */}
         </div>
       </div>
-
-      {/* 2. Content Section - ফ্লোটিং স্টাইল */}
       <div className="max-w-7xl mx-auto px-6 -mt-14 relative z-20 pb-20">
-        {/* Summary Bar */}
         <div className="bg-white p-4 rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 mb-12 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-4 ml-4">
             <div className="bg-orange-50 p-3 rounded-2xl">
@@ -110,28 +97,25 @@ const MyVehicles = ({ userEmail }) => {
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
                 Total Assets
               </p>
-              <h4 className="text-xl font-black text-[#1a1a1a]">
+              <h4 className="text-xl font-black text-[#1a1a1a] ">
                 {vehicles.length} Units Listed
               </h4>
             </div>
           </div>
           <Buttons
-            onClick={() => navigate('/add-vehicle')}
+            onClick={() => navigate('/addvehicle')}
             type="solid"
-            className="!rounded-2xl !py-4 !px-8 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 flex items-center gap-2"
+            className="!rounded-2xl !py-4 cursor-pointer text-[10px] font-black uppercase tracking-widest shadow-lg shadow-orange-500/20"
           >
             <Plus size={16} /> Add New Vehicle
           </Buttons>
         </div>
-
-        {/* Vehicle Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {vehicles.map((vehicle) => (
             <div
               key={vehicle._id}
               className="bg-white rounded-[2.5rem] p-7 border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-500 group"
             >
-              {/* Image Section */}
               <div className="relative h-56 w-full bg-gray-50 rounded-[2rem] overflow-hidden mb-8">
                 <img
                   src={

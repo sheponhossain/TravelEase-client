@@ -142,6 +142,7 @@ const VehicleDetails = () => {
 
   const displayData = defaultSpecs;
 
+  // eslint-disable-next-line no-unused-vars
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -194,14 +195,53 @@ const VehicleDetails = () => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  const handleBooking = () => {
-    setBookingSuccess(true);
-    fireConfetti();
-    setTimeout(() => setBookingSuccess(false), 3000);
-    toast.success(`Booking request sent for ${vehicle?.vehicleName}!`);
-    setTimeout(() => {
-      navigate('/mybookings'); // আপনার My Booking পেজের সঠিক পাথটি এখানে দিন
-    }, 2000);
+  const handleBooking = async () => {
+    try {
+      const bookingData = {
+        vehicleId: vehicle?._id,
+        vehicleName: vehicle?.vehicleName,
+        vehicleImage: images[0],
+        price: vehicle?.pricePerDay,
+        pickupDate: pickupDate,
+        pickupTime: pickupTime,
+        deliveryMode: deliveryMode,
+        location: vehicle?.location,
+        status: 'Upcoming',
+        createdAt: new Date(),
+      };
+
+      const response = await fetch('http://localhost:5000/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      // এখানে আমরা প্রথমে চেক করছি রেসপন্স JSON কি না
+      const contentType = response.headers.get('content-type');
+
+      if (
+        response.ok &&
+        contentType &&
+        contentType.includes('application/json')
+      ) {
+        setBookingSuccess(true);
+        fireConfetti();
+        toast.success(`Booking successful for ${vehicle?.vehicleName}!`);
+        setTimeout(() => {
+          setBookingSuccess(false);
+          navigate('/mybookings');
+        }, 2000);
+      } else {
+        const errorText = await response.text();
+        console.error('Server returned non-JSON response:', errorText);
+        toast.error('Booking failed. Route not found or Server error.');
+      }
+    } catch (error) {
+      console.error('Network or Syntax Error:', error);
+      toast.error('Something went wrong! Check your Server Connection.');
+    }
   };
   if (loading) {
     return <div>Loading...</div>; // লোডিং স্ক্রিন
@@ -234,11 +274,10 @@ const VehicleDetails = () => {
         </div>
       </div>
 
-      {/* Middle Row: Title and Action Buttons */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-1.5 bg-gray-100 px-3 py-1 rounded-full">
           <h1 className="text-3xl font-black text-gray-900">
-            {vehicle?.vehicleName} {/* এখানেও পরিবর্তন করুন */}
+            {vehicle?.vehicleName}
           </h1>
         </div>
 

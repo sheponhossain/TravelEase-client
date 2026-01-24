@@ -1,66 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 const BookingsAndTransactions = () => {
   const [selected, setSelected] = useState('last-30-days');
-  const lastBookings = [
-    {
-      id: 1,
-      name: 'Ferrari 458 MM Speciale',
-      type: 'Hourly',
-      start: '15 Sep 2023, 11:30 PM',
-      end: '15 Sep 2023, 1:30 PM',
-      price: '$200',
-      status: 'Upcoming',
-      statusColor: 'text-blue-600 bg-blue-50',
-      img: 'https://images.unsplash.com/photo-1592198084033-aade902d1aae?w=100',
-    },
-    {
-      id: 2,
-      name: 'Kia Soul 2016',
-      type: 'Hourly',
-      start: '15 Sep 2023, 09:00 AM',
-      end: '15 Sep 2023, 1:30 PM',
-      price: '$300',
-      status: 'Upcoming',
-      statusColor: 'text-blue-600 bg-blue-50',
-      img: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=100',
-    },
-    {
-      id: 3,
-      name: 'Toyota Camry SE 350',
-      type: 'Day',
-      start: '18 Sep 2023, 09:00 AM',
-      end: '18 Sep 2023, 05:00 PM',
-      price: '$600',
-      status: 'Inprogress',
-      statusColor: 'text-orange-600 bg-orange-50',
-      img: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=100',
-    },
-    {
-      id: 4,
-      name: 'Audi A3 2019 new',
-      type: 'Weekly',
-      start: '10 Oct 2023, 10:30 AM',
-      end: '16 Oct 2023, 10:30 AM',
-      price: '$800',
-      status: 'Completed',
-      statusColor: 'text-green-600 bg-green-50',
-      img: 'https://images.unsplash.com/photo-1606152421802-db97b9c7a11b?w=100',
-    },
-    {
-      id: 5,
-      name: '2018 Chevrolet Camaro',
-      type: 'Hourly',
-      start: '14 Nov 2023, 02:00 PM',
-      end: '14 Nov 2023, 04:00 PM',
-      price: '$240',
-      status: 'Completed',
-      statusColor: 'text-green-600 bg-green-50',
-      img: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=100',
-    },
-  ];
+  const [bookings, setBookings] = useState([]); // ডাটাবেস থেকে আসা ডাটা
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
+  // --- ডাটা ফেচ করার লজিক ---
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        setLoading(true);
+        // আপনার এপিআই ইউআরএল এখানে দিন
+        const response = await fetch('http://localhost:5000/api/bookings');
+        const data = await response.json();
+
+        // সব ডাটা থেকে শুধুমাত্র লাস্ট ৫টি বুকিং নেওয়া হচ্ছে (Latest first)
+        const latestFive = data.reverse().slice(0, 5);
+        setBookings(latestFive);
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBookings();
+  }, []);
+
+  // স্ট্যাটিক রিসেন্ট ট্রানজেকশন ডাটা (যা আপনি চেঞ্জ করতে চাননি)
   const recentTransactions = [
     {
       name: 'Ferrari 458 MM Speciale',
@@ -91,141 +60,100 @@ const BookingsAndTransactions = () => {
   return (
     <div className="w-full bg-gray-50/30 py-6">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Last 5 Bookings Section - 2/3 Width */}
+        {/* Last 5 Bookings Section - Dynamic Data */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-50 flex justify-between items-center">
             <h3 className="text-xl font-bold text-[#040720]">
               Last 5 Bookings
             </h3>
             <div className="flex items-center gap-4">
-              <div className="relative inline-block">
-                <select
-                  value={selected}
-                  onChange={(e) => setSelected(e.target.value)}
-                  className="appearance-none bg-white border border-gray-100 pl-4 pr-10 py-2 rounded-xl 
-                   text-[11px] font-[1000] uppercase tracking-widest text-[#1a1a1a] 
-                   cursor-pointer outline-none hover:border-[#FF7000] transition-all 
-                   shadow-sm focus:ring-2 ring-orange-50"
-                >
-                  <option value="this-week" className="font-bold py-2">
-                    This Week
-                  </option>
-                  <option value="this-month" className="font-bold py-2">
-                    This Month
-                  </option>
-                  <option value="last-30-days" className="font-bold py-2">
-                    Last 30 Days
-                  </option>
-                </select>
-
-                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                  <ChevronDown size={14} className="text-[#FF7000]" />
-                </div>
-              </div>
-              <a
-                href="/allvehicles"
-                className="text-sm font-bold text-teal-600 hover:underline"
+              <button
+                onClick={() => navigate('/my-bookings')} // My Booking পেজে নেভিগেট করবে
+                className="text-sm font-bold text-teal-600 hover:underline flex items-center gap-1"
               >
-                View all Bookings
-              </a>
+                View all Bookings <ArrowRight size={14} />
+              </button>
             </div>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <tbody className="divide-y divide-gray-50">
-                {lastBookings.map((booking) => (
-                  <tr
-                    key={booking.id}
-                    className="hover:bg-gray-50/50 transition-colors"
-                  >
-                    <td className="p-4 flex items-center gap-4 min-w-[250px]">
-                      <img
-                        src={booking.img}
-                        className="w-14 h-14 rounded-lg object-cover"
-                        alt=""
-                      />
-                      <div>
-                        <p className="font-bold text-[#040720] text-sm">
-                          {booking.name}
-                        </p>
-                        <p className="text-xs text-gray-400 font-medium">
-                          Rent Type : {booking.type}
-                        </p>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">
-                        Start date
-                      </p>
-                      <p className="text-xs font-bold text-gray-600">
-                        {booking.start}
-                      </p>
-                    </td>
-                    <td className="p-4">
-                      <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">
-                        End Date
-                      </p>
-                      <p className="text-xs font-bold text-gray-600">
-                        {booking.end}
-                      </p>
-                    </td>
-                    <td className="p-4 text-center">
-                      <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">
-                        Price
-                      </p>
-                      <p className="text-sm font-black text-red-500">
-                        {booking.price}
-                      </p>
-                    </td>
-                    <td className="p-4">
-                      <span
-                        className={`px-3 py-1.5 rounded-md text-[11px] font-bold ${booking.statusColor}`}
-                      >
-                        {booking.status}
-                      </span>
+                {loading ? (
+                  <tr>
+                    <td className="p-10 text-center text-gray-400">
+                      Loading bookings...
                     </td>
                   </tr>
-                ))}
+                ) : bookings.length > 0 ? (
+                  bookings.map((booking) => (
+                    <tr
+                      key={booking._id}
+                      className="hover:bg-gray-50/50 transition-colors"
+                    >
+                      <td className="p-4 flex items-center gap-4 min-w-[250px]">
+                        <img
+                          src={
+                            booking.vehicleImage ||
+                            'https://via.placeholder.com/100'
+                          }
+                          className="w-14 h-14 rounded-lg object-cover"
+                          alt=""
+                        />
+                        <div>
+                          <p className="font-bold text-[#040720] text-sm">
+                            {booking.vehicleName}
+                          </p>
+                          <p className="text-xs text-gray-400 font-medium">
+                            Rent Type : {booking.rentType || 'Daily'}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">
+                          Start date
+                        </p>
+                        <p className="text-xs font-bold text-gray-600">
+                          {new Date(booking.startDate).toLocaleDateString()}
+                        </p>
+                      </td>
+                      <td className="p-4 text-center">
+                        <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">
+                          Price
+                        </p>
+                        <p className="text-sm font-black text-red-500">
+                          ${booking.totalPrice}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`px-3 py-1.5 rounded-md text-[11px] font-bold 
+                          ${booking.status === 'Completed' ? 'text-green-600 bg-green-50' : 'text-blue-600 bg-blue-50'}`}
+                        >
+                          {booking.status || 'Upcoming'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td className="p-10 text-center text-gray-400">
+                      No bookings found.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Recent Transaction Section - 1/3 Width */}
+        {/* Recent Transaction Section - Default/Static as you requested */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden h-fit">
           <div className="p-6 border-b border-gray-50 flex justify-between items-center">
             <h3 className="text-xl font-bold text-[#040720]">
               Recent Transaction
             </h3>
-            <div className="relative inline-block">
-              {/* কাস্টম ডিজাইন করা সিলেক্ট বক্স */}
-              <select
-                value={selected}
-                onChange={(e) => setSelected(e.target.value)}
-                className="appearance-none bg-white border border-gray-100 pl-4 pr-10 py-2 rounded-xl 
-                   text-[11px] font-[1000] uppercase tracking-widest text-[#1a1a1a] 
-                   cursor-pointer outline-none hover:border-[#FF7000] transition-all 
-                   shadow-sm focus:ring-2 ring-orange-50"
-              >
-                <option value="this-week" className="font-bold py-2">
-                  This Week
-                </option>
-                <option value="this-month" className="font-bold py-2">
-                  This Month
-                </option>
-                <option value="last-30-days" className="font-bold py-2">
-                  Last 30 Days
-                </option>
-              </select>
-
-              {/* কাস্টম অ্যারো আইকন যা ক্লিক করা আটকাবে না */}
-              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                <ChevronDown size={14} className="text-[#FF7000]" />
-              </div>
-            </div>
           </div>
-
           <div className="p-4 space-y-4">
             {recentTransactions.map((tx, index) => (
               <div key={index} className="space-y-3">

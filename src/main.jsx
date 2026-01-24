@@ -74,7 +74,7 @@ const router = createBrowserRouter([
         element: <Page404 />,
       },
       {
-        path: 'VehicleDetails',
+        path: '/VehicleDetails/:id',
         element: <VehicleDetails />,
       },
     ],

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 import {
@@ -11,6 +11,10 @@ import {
   ChevronLeft,
   CheckCircle,
   Tags,
+  Zap,
+  Users,
+  Fuel,
+  Settings,
 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import Buttons from '../components/common/Buttons';
@@ -34,6 +38,12 @@ const AddVehicles = ({ userEmail }) => {
     availability: 'Available',
     description: '',
     userEmail: staticEmail,
+    // নতুন কি-গুলো নিচে যোগ করা হলো
+    category: 'Luxury',
+    rating: 3,
+    transmission: 'Manual',
+    fuel: 'Petrol',
+    capacity: '4 Persons',
   });
 
   const handleChange = (e) => {
@@ -50,38 +60,45 @@ const AddVehicles = ({ userEmail }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!imageFile) return toast.error('Please upload a cover image!');
+    if (!imageFile) return toast.error('Please select an image!');
 
     setLoading(true);
 
     try {
-      const vehicleData = {
-        vehicleName: formData.vehicleName,
-        owner: formData.owner,
-        categories: formData.categories,
-        pricePerDay: Number(formData.pricePerDay),
-        location: formData.location,
-        availability: formData.availability,
-        description: formData.description,
-        coverImage: preview,
-        userEmail: staticEmail,
-        createdAt: new Date().toISOString(),
-      };
+      const imgData = new FormData();
+      imgData.append('image', imageFile);
 
-      const response = await axios.post(
-        'http://localhost:5000/api/vehicles',
-        vehicleData
+      const IMGBB_API_KEY = 'c35f516f0410b5dcd13ebde2c666e10e';
+
+      const imgResponse = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,
+        imgData
       );
 
-      if (response.data) {
-        toast.success('Vehicle registered successfully!');
-        setTimeout(() => navigate('/myvehicles'), 2000);
+      if (imgResponse.data.success) {
+        const imageUrl = imgResponse.data.data.display_url;
+
+        const vehicleData = {
+          ...formData, // সব ফর্ম ডাটা একসাথে পাঠানো হচ্ছে
+          pricePerDay: Number(formData.pricePerDay),
+          coverImage: imageUrl,
+          createdAt: new Date().toISOString(),
+        };
+
+        const response = await axios.post(
+          'http://localhost:5000/api/vehicles',
+          vehicleData
+        );
+
+        if (response.data) {
+          toast.success('Awesome! Data saved with Image URL.');
+          setTimeout(() => navigate('/myvehicles'), 2000);
+        }
       }
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || 'Server Error! Check Port 5000'
-      );
+      console.error('Debug Details:', error.response?.data);
+      const msg = error.response?.data?.error?.message || 'Check your API Key';
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -101,14 +118,6 @@ const AddVehicles = ({ userEmail }) => {
             <ChevronLeft size={20} />
           </button>
           <Heading className="text-white">ADD VEHICLE</Heading>
-
-          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <p className="text-white/60 text-[11px] font-medium tracking-wider uppercase">
-              Registering with:{' '}
-              <span className="text-white">{staticEmail}</span>
-            </p>
-          </div>
         </div>
       </div>
 
@@ -149,6 +158,7 @@ const AddVehicles = ({ userEmail }) => {
           <div className="lg:col-span-8">
             <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-gray-100">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Vehicle Name */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
                     Vehicle Name
@@ -164,56 +174,102 @@ const AddVehicles = ({ userEmail }) => {
                       required
                       value={formData.vehicleName}
                       onChange={handleChange}
-                      placeholder="Tesla Model 3"
-                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
+                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
                     />
                   </div>
                 </div>
 
+                {/* category (Luxury) */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                    Owner Name
+                    Vehicle Class
                   </label>
                   <div className="relative">
-                    <User
+                    <Zap
+                      className="absolute left-5 top-1/2 -translate-y-1/2 text-[#FF7000]"
+                      size={18}
+                    />
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none appearance-none"
+                    >
+                      <option value="Luxury">Luxury</option>
+                      <option value="Standard">Standard</option>
+                      <option value="Economy">Economy</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Transmission */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                    Transmission
+                  </label>
+                  <div className="relative">
+                    <Settings
+                      className="absolute left-5 top-1/2 -translate-y-1/2 text-[#FF7000]"
+                      size={18}
+                    />
+                    <select
+                      name="transmission"
+                      value={formData.transmission}
+                      onChange={handleChange}
+                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none appearance-none"
+                    >
+                      <option value="Manual">Manual</option>
+                      <option value="Automatic">Automatic</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Fuel */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                    Fuel Type
+                  </label>
+                  <div className="relative">
+                    <Fuel
+                      className="absolute left-5 top-1/2 -translate-y-1/2 text-[#FF7000]"
+                      size={18}
+                    />
+                    <select
+                      name="fuel"
+                      value={formData.fuel}
+                      onChange={handleChange}
+                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none appearance-none"
+                    >
+                      <option value="Petrol">Petrol</option>
+                      <option value="Diesel">Diesel</option>
+                      <option value="Electric">Electric</option>
+                      <option value="Hybrid">Hybrid</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Capacity */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                    Capacity
+                  </label>
+                  <div className="relative">
+                    <Users
                       className="absolute left-5 top-1/2 -translate-y-1/2 text-[#FF7000]"
                       size={18}
                     />
                     <input
                       type="text"
-                      name="owner"
-                      required
-                      value={formData.owner}
+                      name="capacity"
+                      value={formData.capacity}
                       onChange={handleChange}
-                      placeholder="Owner Name"
-                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
+                      placeholder="4 Persons"
+                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                    Main Category
-                  </label>
-                  <div className="relative">
-                    <Tags
-                      className="absolute left-5 top-1/2 -translate-y-1/2 text-[#FF7000]"
-                      size={18}
-                    />
-                    <select
-                      name="categories"
-                      value={formData.categories}
-                      onChange={handleChange}
-                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none appearance-none cursor-pointer"
-                    >
-                      <option value="Electric">Electric</option>
-                      <option value="Sedan">Sedan</option>
-                      <option value="SUV">SUV</option>
-                      <option value="Van">Van</option>
-                    </select>
-                  </div>
-                </div>
-
+                {/* Price */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
                     Price Per Day ($)
@@ -229,12 +285,12 @@ const AddVehicles = ({ userEmail }) => {
                       required
                       value={formData.pricePerDay}
                       onChange={handleChange}
-                      placeholder="70"
-                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
+                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
                     />
                   </div>
                 </div>
 
+                {/* Location */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
                     Location
@@ -250,12 +306,12 @@ const AddVehicles = ({ userEmail }) => {
                       required
                       value={formData.location}
                       onChange={handleChange}
-                      placeholder="Dhaka, Bangladesh"
-                      className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
+                      className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-black text-[#1a1a1a] outline-none"
                     />
                   </div>
                 </div>
 
+                {/* Availability */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
                     Availability
@@ -278,6 +334,7 @@ const AddVehicles = ({ userEmail }) => {
                 </div>
               </div>
 
+              {/* Description */}
               <div className="mt-8 space-y-3">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
                   Description
@@ -292,8 +349,7 @@ const AddVehicles = ({ userEmail }) => {
                     value={formData.description}
                     onChange={handleChange}
                     rows="4"
-                    placeholder="Comfortable 5-seater with A/C..."
-                    className="w-full bg-gray-50 border-none focus:ring-2 ring-[#FF7000]/20 pl-14 pr-6 py-5 rounded-2xl text-sm font-medium text-gray-600 outline-none transition-all resize-none"
+                    className="w-full bg-gray-50 border-none pl-14 pr-6 py-5 rounded-2xl text-sm font-medium text-gray-600 outline-none transition-all resize-none"
                   ></textarea>
                 </div>
               </div>

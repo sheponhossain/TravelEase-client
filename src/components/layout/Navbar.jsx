@@ -149,7 +149,7 @@ const Navbar = () => {
               {/* Sign Out Button */}
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-2 bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 border border-gray-100"
+                className="flex cursor-pointer items-center gap-2 bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 border border-gray-100"
               >
                 <FaSignOutAlt /> Sign Out
               </button>

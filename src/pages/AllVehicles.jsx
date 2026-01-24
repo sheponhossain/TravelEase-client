@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import 'flatpickr/dist/themes/material_orange.css';
@@ -24,12 +24,19 @@ import { useNavigate } from 'react-router';
 import Buttons from '../components/common/Buttons';
 import Heading from '../Heading/Heading';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../Routers/AuthProvider';
 
 const AllVehicles = () => {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const addToWishlist = async (car) => {
+    if (!user?.email) {
+      toast.error('Please login to add to wishlist!');
+      return navigate('/login');
+    }
     try {
       const response = await axios.post('http://localhost:5000/api/wishlist', {
+        userEmail: user.email,
         vehicleId: car._id,
         vehicleName: car.vehicleName,
         price: car.pricePerDay,
@@ -377,7 +384,7 @@ const AllVehicles = () => {
 
                           {/* প্রাইস অংশ */}
                           <div className="flex items-center gap-1">
-                            <span className="text-[#E63946] font-black text-xl">
+                            <span className="text-[#FF7000] font-black text-xl">
                               ${car.pricePerDay}
                             </span>
                             <div className="flex flex-col ">

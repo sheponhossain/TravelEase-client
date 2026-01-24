@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 import {
@@ -19,11 +19,10 @@ import {
 import { useNavigate } from 'react-router';
 import Buttons from '../components/common/Buttons';
 import Heading from '../Heading/Heading';
+import { AuthContext } from '../Routers/AuthProvider';
 
-const AddVehicles = ({ userEmail }) => {
-  const staticEmail = 'shepon@gmail.com';
-  const userName = 'Shepon';
-
+const AddVehicles = () => {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
@@ -31,20 +30,29 @@ const AddVehicles = ({ userEmail }) => {
 
   const [formData, setFormData] = useState({
     vehicleName: '',
-    owner: userName,
+    owner: user?.displayName || 'Anonymous',
     categories: 'Sedan',
     pricePerDay: '',
     location: '',
     availability: 'Available',
     description: '',
-    userEmail: staticEmail,
-    // নতুন কি-গুলো নিচে যোগ করা হলো
+    userEmail: user?.email || '',
     category: 'Luxury',
     rating: 3,
     transmission: 'Manual',
     fuel: 'Petrol',
     capacity: '4 Persons',
   });
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        owner: user.displayName,
+        userEmail: user.email,
+      }));
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -79,7 +87,8 @@ const AddVehicles = ({ userEmail }) => {
         const imageUrl = imgResponse.data.data.display_url;
 
         const vehicleData = {
-          ...formData, // সব ফর্ম ডাটা একসাথে পাঠানো হচ্ছে
+          ...formData,
+          userEmail: user?.email,
           pricePerDay: Number(formData.pricePerDay),
           coverImage: imageUrl,
           createdAt: new Date().toISOString(),

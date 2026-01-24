@@ -22,6 +22,7 @@ import AddVehicles from './pages/AddVehicles.jsx';
 import { ToastContainer } from 'react-toastify';
 import MyVehicles from './pages/MyVehicles.jsx';
 import Loading from './Loader/Loading.jsx';
+import TopRatedSection from './components/TopRatedSection/TopRatedSection.jsx';
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
             <Hero />
             <TopCategories />
             <FeaturedOwner />
+            <TopRatedSection />
           </>
         ),
       },

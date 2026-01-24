@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Plus,
   LayoutGrid,
@@ -14,8 +14,10 @@ import {
 import Buttons from '../../common/Buttons';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { AuthContext } from '../../../Routers/AuthProvider';
 
 const MyBooking = () => {
+  const { user } = useContext(AuthContext);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All Bookings');
@@ -24,13 +26,17 @@ const MyBooking = () => {
 
   // ১. ডাটা ফেচ করা
   const fetchBookings = async () => {
+    if (!user?.email) return;
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/bookings');
+      const response = await fetch(
+        `http://localhost:5000/api/my-bookings/${user.email}`
+      );
       const data = await response.json();
       setBookings(data.reverse());
     } catch (error) {
       console.error('Fetch Error:', error);
+      toast.error('Failed to load your bookings.');
     } finally {
       setLoading(false);
     }
@@ -38,9 +44,8 @@ const MyBooking = () => {
 
   useEffect(() => {
     fetchBookings();
-  }, []);
+  }, [user?.email]);
 
-  // ২. ডিলিট লজিক
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this booking?')) {
       try {
@@ -53,9 +58,8 @@ const MyBooking = () => {
         if (response.ok) {
           toast.success('Booking deleted successfully!');
           setBookings(bookings.filter((b) => b._id !== id));
-        } else {
-          toast.error('Failed to delete booking.');
         }
+        // eslint-disable-next-line no-unused-vars
       } catch (error) {
         toast.error('Server error. Try again.');
       }
@@ -68,7 +72,6 @@ const MyBooking = () => {
     return b.status?.toLowerCase() === activeFilter.toLowerCase();
   });
 
-  // স্ট্যাটাস কার্ড লজিক...
   const totalBookings = bookings.length;
   const totalSpent = bookings.reduce(
     (sum, item) => sum + (Number(item.price) || 0),
@@ -144,8 +147,9 @@ const MyBooking = () => {
             ))}
           </div>
           <Buttons
+            onClick={() => navigate('/allvehicles')}
             type="solid"
-            className="!py-2 !px-6 flex items-center gap-2 shadow-lg shadow-orange-200"
+            className="!py-2 !px-6 cursor-pointer flex items-center gap-2 shadow-lg shadow-orange-200"
           >
             <Plus size={18} /> Add Booking
           </Buttons>

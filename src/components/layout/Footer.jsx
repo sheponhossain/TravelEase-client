@@ -1,6 +1,10 @@
 import React from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
+import BkashLogo from '../../assets/Bkash.png';
+import nagadlogo from '../../assets/Nagad.png';
+import rocketlogo from '../../assets/rocket.png';
+import visalogo from '../../assets/visa.png';
 import {
   FaPhoneAlt,
   FaEnvelope,
@@ -144,41 +148,27 @@ const Footer = () => {
 
           {/* Pure Text Logos for Payments */}
           <div className="flex items-center gap-4">
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="bg-white px-3 py-1 rounded cursor-pointer flex items-center justify-center"
-            >
-              <span className="text-[#D12053] font-black text-xs italic tracking-tighter">
-                bKash
-              </span>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="bg-white px-3 py-1 rounded cursor-pointer flex items-center justify-center"
-            >
-              <span className="text-[#F47321] font-bold text-xs uppercase">
-                Nagad
-              </span>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="bg-white px-3 py-1 rounded cursor-pointer flex items-center justify-center"
-            >
-              <span className="text-[#8C3494] font-extrabold text-xs italic">
-                Rocket
-              </span>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="bg-white px-3 py-1 rounded cursor-pointer flex items-center justify-center"
-            >
-              <span className="text-[#1A1F71] font-black text-xs italic">
-                VISA
-              </span>
-            </motion.div>
+            {[
+              { logo: BkashLogo, alt: 'bKash' },
+              { logo: nagadlogo, alt: 'Nagad' },
+              { logo: rocketlogo, alt: 'Rocket' },
+              { logo: visalogo, alt: 'Visa' },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                whileHover={{
+                  y: -5,
+                  boxShadow: '0px 10px 20px rgba(0,0,0,0.05)',
+                }}
+                className="bg-white px-4 py-2 rounded-xl cursor-pointer flex items-center justify-center border border-gray-100 shadow-sm transition-shadow h-12 w-20 md:w-24 overflow-hidden"
+              >
+                <img
+                  src={item.logo}
+                  alt={item.alt}
+                  className="h-full w-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+                />
+              </motion.div>
+            ))}
           </div>
 
           {/* Scroll to Top */}

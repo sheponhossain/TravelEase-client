@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { toast, Toaster } from 'react-hot-toast';
 import {
   Trash2,
@@ -19,14 +19,16 @@ import Buttons from '../components/common/Buttons';
 import Heading from '../Heading/Heading';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
+import { AuthContext } from '../Routers/AuthProvider';
 
-const MyVehicles = ({ userEmail }) => {
+const MyVehicles = () => {
+  const { user } = useContext(AuthContext);
+  const { id } = useParams();
   const [imageFile, setImageFile] = useState(null);
+  const [vehicle, setVehicle] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
-  // ১. আপনার দেওয়া মেইল অনুযায়ী হার্ডকোড করা হলো যদি প্রপস খালি থাকে
-  const activeEmail = userEmail || 'shepon@gmail.com';
 
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,25 +36,32 @@ const MyVehicles = ({ userEmail }) => {
 
   useEffect(() => {
     const fetchMyVehicles = async () => {
+      if (!user?.email) return;
       try {
         setLoading(true);
-        // ২. আপনার ব্যাকএন্ড এন্ডপয়েন্টে ইমেইল পাঠানো হচ্ছে
         const response = await axios.get(
-          `http://localhost:5000/api/my-vehicles/${activeEmail}`
+          `http://localhost:5000/api/my-vehicles/${user.email}`
         );
         setVehicles(response.data);
       } catch (error) {
-        console.error('Fetch Error:', error);
+        console.error('Fetch Error:', error.response);
         toast.error('Failed to load vehicles from server');
       } finally {
         setLoading(false);
       }
     };
 
-    if (activeEmail) {
+    if (user?.email) {
       fetchMyVehicles();
     }
-  }, [activeEmail]);
+  }, [user?.email]);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5000/api/vehicles/${id}`)
+      .then((res) => setVehicle(res.data))
+      .catch((err) => console.log(err));
+  }, [id]);
 
   const handleDelete = async (id) => {
     toast(
@@ -71,6 +80,7 @@ const MyVehicles = ({ userEmail }) => {
                   );
                   setVehicles(vehicles.filter((v) => v._id !== id));
                   toast.success('Vehicle removed!');
+                  // eslint-disable-next-line no-unused-vars
                 } catch (err) {
                   toast.error('Delete failed!');
                 }
@@ -114,7 +124,7 @@ const MyVehicles = ({ userEmail }) => {
           <Heading className="text-white">MY GARAGE</Heading>
           {/* বর্তমানে কোন ইউজার চেক হচ্ছে তার জন্য ছোট ইন্ডিকেটর */}
           <span className="text-white/30 text-[9px] font-bold uppercase tracking-[0.3em] mt-4">
-            User: {activeEmail}
+            User: {user?.email}
           </span>
         </div>
       </div>
@@ -260,9 +270,7 @@ const MyVehicles = ({ userEmail }) => {
                       <div className="flex gap-2">
                         {/* View Details / Eye Button */}
                         <button
-                          onClick={() =>
-                            navigate(`/vehicle-details/${car._id}`)
-                          }
+                          onClick={() => navigate(`/VehicleDetails/${car._id}`)}
                           className="bg-blue-50 text-blue-500 p-3 rounded-xl hover:bg-blue-500 hover:text-white transition-all group/eye"
                           title="View Details"
                         >

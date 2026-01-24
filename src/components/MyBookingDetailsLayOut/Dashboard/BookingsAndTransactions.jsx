@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ChevronDown, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { AuthContext } from '../../../Routers/AuthProvider';
 
 const BookingsAndTransactions = () => {
+  const { user } = useContext(AuthContext);
   // const [selected, setSelected] = useState('last-30-days');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,24 +12,25 @@ const BookingsAndTransactions = () => {
 
   useEffect(() => {
     const fetchBookings = async () => {
+      if (!user?.email) return;
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/bookings');
+        const response = await fetch(
+          `http://localhost:5000/api/my-bookings/${user.email}`
+        );
         const data = await response.json();
 
-        // সর্বশেষ ৫টি বুকিং দেখাবে
         const latestFive = data.reverse().slice(0, 5);
         setBookings(latestFive);
       } catch (error) {
-        console.error('Error fetching bookings:', error);
+        console.error('Error fetching user bookings:', error);
       } finally {
         setLoading(false);
       }
     };
     fetchBookings();
-  }, []);
+  }, [user?.email]);
 
-  // স্ট্যাটিক রিসেন্ট ট্রানজেকশন (আপনার ডিজাইন অনুযায়ী অপরিবর্তিত)
   const recentTransactions = [
     {
       name: 'Ferrari 458 MM Speciale',

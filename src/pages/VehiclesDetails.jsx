@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   MapPin,
   Eye,
@@ -30,8 +30,10 @@ import Flatpickr from 'react-flatpickr';
 import AddVehicleModal from '../components/common/AddVehicleModal';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../Routers/AuthProvider';
 
 const VehicleDetails = () => {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const { id } = useParams();
   const [vehicle, setVehicle] = useState(null);
@@ -198,6 +200,7 @@ const VehicleDetails = () => {
   const handleBooking = async () => {
     try {
       const bookingData = {
+        userEmail: user?.email,
         vehicleId: vehicle?._id,
         vehicleName: vehicle?.vehicleName,
         vehicleImage: images[0],
@@ -218,7 +221,6 @@ const VehicleDetails = () => {
         body: JSON.stringify(bookingData),
       });
 
-      // এখানে আমরা প্রথমে চেক করছি রেসপন্স JSON কি না
       const contentType = response.headers.get('content-type');
 
       if (

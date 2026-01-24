@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import {
   Star,
@@ -15,19 +15,25 @@ import {
 import Buttons from '../../common/Buttons';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { AuthContext } from '../../../Routers/AuthProvider';
 
 const Wishlist = () => {
+  const { user } = useContext(AuthContext);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const fetchWishlist = async () => {
+    if (!user?.email) return;
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/wishlist');
+      const response = await axios.get(
+        `http://localhost:5000/api/wishlist/${user.email}`
+      );
       setWishlistItems(response.data);
       console.log(response);
     } catch (error) {
       console.error('Wishlist Fetch Error:', error);
+      toast.error('Failed to load wishlist items');
     } finally {
       setLoading(false);
     }
@@ -35,7 +41,7 @@ const Wishlist = () => {
 
   useEffect(() => {
     fetchWishlist();
-  }, []);
+  }, [user?.email]);
 
   const handleDelete = async (id) => {
     try {

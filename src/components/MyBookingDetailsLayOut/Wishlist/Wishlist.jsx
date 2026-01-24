@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Star,
   Heart,
@@ -9,142 +10,135 @@ import {
   Fuel,
   Gauge,
   CalendarDays,
+  Trash2,
 } from 'lucide-react';
 import Buttons from '../../common/Buttons';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 
 const Wishlist = () => {
-  const wishlistItems = [
-    {
-      id: 1,
-      name: 'BMW 640 XI Gran Turismo',
-      category: 'BMW',
-      rating: '5.0',
-      price: '60',
-      location: 'Pattaya, Thailand',
-      img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=500',
-      specs: {
-        transmission: 'Manual',
-        mileage: '4600 KM',
-        fuel: 'Petrol',
-        drive: 'Normal',
-        year: '2021',
-        capacity: '6 Persons',
-      },
-    },
-    {
-      id: 2,
-      name: 'Ferrari 458 MM Speciale',
-      category: 'Ferrari',
-      rating: '5.0',
-      price: '100',
-      location: 'Newyork, USA',
-      img: 'https://images.unsplash.com/photo-1592198084033-aade902d1aae?w=500',
-      specs: {
-        transmission: 'Auto',
-        mileage: '10 KM',
-        fuel: 'Petrol',
-        drive: 'Power',
-        year: '2018',
-        capacity: '5 Persons',
-      },
-    },
-  ];
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const fetchWishlist = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:5000/api/wishlist');
+      setWishlistItems(response.data);
+      console.log(response);
+    } catch (error) {
+      console.error('Wishlist Fetch Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWishlist();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/wishlist/${id}`);
+      setWishlistItems(wishlistItems.filter((item) => item._id !== id));
+      toast.success('Removed from wishlist');
+    } catch (error) {
+      toast.error('Failed to remove item');
+    }
+  };
+
+  if (loading)
+    return (
+      <div className="text-center py-20 font-bold text-gray-400">
+        Loading Wishlist...
+      </div>
+    );
 
   return (
-    <div className="w-full bg-gray-50/30 py-8">
+    <div className="w-full bg-gray-50/30 py-8 min-h-screen">
       <div className="mx-auto w-full md:w-11/12 lg:w-10/12">
         <h2 className="text-3xl font-black text-[#040720] mb-8 px-2">
-          Wishlist
+          Wishlist ({wishlistItems.length})
         </h2>
 
         <div className="space-y-6">
           {wishlistItems.map((car) => (
             <div
-              key={car.id}
-              className="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 hover:shadow-md transition-all duration-300"
+              key={car._id}
+              className="bg-white rounded-[2rem] p-4 md:p-5 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-8 hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-500"
             >
-              {/* Image Section */}
-              <div className="relative w-full md:w-72 h-48 flex-shrink-0">
+              <div className="relative w-full md:w-80 h-52 flex-shrink-0 group overflow-hidden rounded-[1.8rem]">
                 <img
-                  src={car.img}
-                  alt={car.name}
-                  className="w-full h-full object-cover rounded-xl"
+                  src={car.image || car.img}
+                  alt={car.vehicleName}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <button className="absolute top-3 left-3 bg-[#117a8b] p-1.5 rounded-full text-white shadow-lg">
-                  <Heart size={18} fill="currentColor" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                <button
+                  onClick={() => handleDelete(car._id)}
+                  className="absolute top-4 left-4 bg-white/90 backdrop-blur-md p-2.5 rounded-2xl text-gray-400 hover:text-red-500 transition-all shadow-lg active:scale-90"
+                  title="Remove from wishlist"
+                >
+                  <Trash2 size={18} />
                 </button>
               </div>
 
-              {/* Content Section */}
-              <div className="flex-grow flex flex-col justify-between">
-                <div>
-                  <div className="flex flex-wrap justify-between items-start gap-2 mb-1">
-                    <h3 className="text-xl font-bold text-[#040720]">
-                      {car.name}
+              <div className="flex-grow flex flex-col py-2">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <span className="text-[#FF7000] font-black text-[10px] uppercase tracking-widest mb-1 block">
+                      {car.category || 'Premium'}
+                    </span>
+                    <h3 className="text-2xl font-black text-[#1a1a1a] uppercase tracking-tight">
+                      {car.vehicleName || car.name}
                     </h3>
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={16}
-                          className="text-orange-400 fill-current"
-                        />
-                      ))}
-                      <span className="text-red-500 font-bold ml-1">
-                        ({car.rating})
-                      </span>
-                      <span className="text-2xl font-black text-[#040720] ml-2">
-                        ${car.price}{' '}
-                        <span className="text-sm font-medium text-gray-400">
-                          / Day
-                        </span>
-                      </span>
-                    </div>
                   </div>
-                  <p className="text-sm font-bold text-gray-400 mb-4">
-                    Category : {car.category}
-                  </p>
 
-                  {/* Gray Specs Bar */}
-                  <div className="bg-gray-50 rounded-lg p-3 flex flex-wrap items-center gap-y-3 gap-x-6 mb-4">
-                    <div className="flex items-center gap-2 text-[13px] font-bold text-gray-500">
-                      <Settings2 size={16} className="text-gray-400" />{' '}
-                      {car.specs.transmission}
-                    </div>
-                    <div className="flex items-center gap-2 text-[13px] font-bold text-gray-500">
-                      <Gauge size={16} className="text-gray-400" />{' '}
-                      {car.specs.mileage}
-                    </div>
-                    <div className="flex items-center gap-2 text-[13px] font-bold text-gray-500">
-                      <Fuel size={16} className="text-gray-400" />{' '}
-                      {car.specs.fuel}
-                    </div>
-                    <div className="flex items-center gap-2 text-[13px] font-bold text-gray-500">
-                      <Settings2 size={16} className="text-gray-400" />{' '}
-                      {car.specs.drive}
-                    </div>
-                    <div className="flex items-center gap-2 text-[13px] font-bold text-gray-500">
-                      <Calendar size={16} className="text-gray-400" />{' '}
-                      {car.specs.year}
-                    </div>
-                    <div className="flex items-center gap-2 text-[13px] font-bold text-gray-500">
-                      <Users size={16} className="text-gray-400" />{' '}
-                      {car.specs.capacity}
+                  {/* Price */}
+                  <div className="flex items-center gap-2 bg-[#F8F9FA] px-5 py-2.5 rounded-[20px] border border-gray-100">
+                    <span className="text-[#D94343] font-bold text-2xl tracking-tighter">
+                      ${car.price}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[#9CA3AF] text-xl font-light italic transform -rotate-12">
+                        /
+                      </span>
+                      <span className="text-[#9CA3AF] font-black text-[11px] uppercase tracking-wider mt-1">
+                        Day
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-2">
-                  <div className="flex items-center gap-1 text-gray-500 font-bold text-sm">
-                    <MapPin size={18} className="text-gray-400" />{' '}
-                    {car.location}
+                {/* স্পেক্স বার */}
+                <div className="flex flex-wrap items-center gap-6 mb-8 mt-2">
+                  {/* ১. ট্রান্সমিশন (Manual/Auto) */}
+                  <div className="flex items-center gap-2 text-xs font-bold text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
+                    <Settings2 size={14} className="text-[#3D707A]" />{' '}
+                    {car.transmission ? car.transmission : 'Auto'}
                   </div>
 
+                  {/* ২. ফুয়েল টাইপ (Petrol/Diesel/Electric) */}
+                  <div className="flex items-center gap-2 text-xs font-bold text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
+                    <Fuel size={14} className="text-[#3D707A]" />{' '}
+                    {car.fuel ? car.fuel : 'Petrol'}
+                  </div>
+
+                  {/* ৩. লোকেশন */}
+                  <div className="flex items-center gap-2 text-xs font-bold text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
+                    <MapPin size={14} className="text-[#3D707A]" />{' '}
+                    {car.location ? car.location : 'Spain'}
+                  </div>
+                </div>
+
+                <div className="mt-auto flex justify-end">
                   <Buttons
                     type="solid"
-                    className="!bg-[#1a1a1a] !py-2.5 !px-8 flex items-center gap-2 rounded-xl text-white"
+                    onClick={() => navigate(`/VehicleDetails/${car.vehicleId}`)}
+                    className="cursor-pointer"
                   >
-                    <CalendarDays size={18} /> Rent Now
+                    <CalendarDays size={18} />
+                    Book Now
                   </Buttons>
                 </div>
               </div>

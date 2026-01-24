@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { use, useContext } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { Mail, Lock, LogIn, ArrowRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
 import { toast, Toaster } from 'react-hot-toast';
 import Buttons from '../components/common/Buttons';
+import { GoogleAuthProvider } from 'firebase/auth';
+import AuthProvider, { AuthContext } from '../Routers/AuthProvider';
 
 const Login = () => {
+  const { signinEmailPass, signinGoogle } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
@@ -16,17 +20,37 @@ const Login = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    if (email === 'admin@travelease.com' && password === '123456') {
-      toast.success('Successfully logged in! 🎉');
-      setTimeout(() => navigate(from, { replace: true }), 1500);
-    } else {
-      toast.error('Invalid credentials. Please try again.');
-    }
+    signinEmailPass(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        toast.success(`Welcome back! 🎉`);
+        setTimeout(() => navigate(from, { replace: true }), 1500);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        if (
+          errorCode === 'auth/invalid-credential' ||
+          errorCode === 'auth/wrong-password'
+        ) {
+          toast.error('ভুল ইমেইল বা পাসওয়ার্ড দিয়েছেন।');
+        } else if (errorCode === 'auth/user-not-found') {
+          toast.error('এই ইমেইলে কোনো অ্যাকাউন্ট নেই।');
+        } else {
+          toast.error('লগইন করতে সমস্যা হচ্ছে। আবার চেষ্টা করুন।');
+        }
+      });
   };
 
   const handleGoogleLogin = () => {
-    toast.success('Connecting to Google...');
-    setTimeout(() => navigate(from, { replace: true }), 1500);
+    signinGoogle()
+      .then((result) => {
+        toast.success(`Welcome ${result.user.displayName}! 🚀`);
+        setTimeout(() => navigate(from, { replace: true }), 1500);
+      })
+      // eslint-disable-next-line no-unused-vars
+      .catch((error) => {
+        toast.error('গুগল লগইন বাতিল করা হয়েছে বা সমস্যা হয়েছে।');
+      });
   };
 
   return (

@@ -1,52 +1,61 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { use, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User, Image, ArrowRight, UserPlus } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
 import { toast, Toaster } from 'react-hot-toast';
 import Buttons from '../components/common/Buttons';
+import { updateProfile } from 'firebase/auth';
+import AuthProvider, { AuthContext } from '../Routers/AuthProvider';
 
 const Register = () => {
+  const { createUser, signinGoogle, auth } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     const name = e.target.name.value;
     const email = e.target.email.value;
     const photo = e.target.photo.value;
     const password = e.target.password.value;
 
-    // --- Password Validation Logic ---
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const isLongEnough = password.length >= 6;
+    // পাসওয়ার্ড ভ্যালিডেশন
+    if (password.length < 6)
+      return toast.error('Password must be at least 6 characters.');
+    if (!/[A-Z]/.test(password))
+      return toast.error('Password needs an uppercase letter.');
+    if (!/[a-z]/.test(password))
+      return toast.error('Password needs a lowercase letter.');
 
-    if (!isLongEnough) {
-      return toast.error('Password must be at least 6 characters long.');
-    }
-    if (!hasUppercase) {
-      return toast.error(
-        'Password must contain at least one uppercase letter.'
+    try {
+      const result = await createUser(email, password);
+      await updateProfile(result.user, {
+        displayName: name,
+        photoURL: photo,
+      });
+
+      toast.success(`Welcome, ${name}! 🎉`);
+      setTimeout(() => navigate(from, { replace: true }), 1500);
+    } catch (error) {
+      toast.error(
+        error.message === 'auth/email-already-in-use'
+          ? 'এই ইমেইলটি অলরেডি ব্যবহার করা হয়েছে।'
+          : error.message
       );
     }
-    if (!hasLowercase) {
-      return toast.error(
-        'Password must contain at least one lowercase letter.'
-      );
-    }
-
-    // Success Logic
-    toast.success(`Welcome, ${name}! Registration Successful. 🎉`);
-    setTimeout(() => navigate(from, { replace: true }), 1500);
   };
 
   const handleGoogleLogin = () => {
-    toast.success('Registering with Google...');
-    setTimeout(() => navigate(from, { replace: true }), 1500);
+    signinGoogle()
+      .then((result) => {
+        toast.success(`Welcome ${result.user.displayName}! 🚀`);
+        setTimeout(() => navigate(from, { replace: true }), 1500);
+      })
+      .catch((error) => toast.error('গুগল রেজিস্ট্রেশন সফল হয়নি।'));
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FDFDFD] px-4 font-sans py-12">
       <Toaster position="top-center" />

@@ -16,17 +16,37 @@ import {
   ChevronDown,
   RotateCcw,
   SlidersHorizontal,
+  Eye,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import Buttons from '../components/common/Buttons';
 import Heading from '../Heading/Heading';
+import { toast } from 'react-toastify';
 
 const AllVehicles = () => {
   const navigate = useNavigate();
+  const addToWishlist = async (car) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/wishlist', {
+        vehicleId: car._id,
+        vehicleName: car.vehicleName,
+        price: car.pricePerDay,
+        image: car.coverImage,
+        transmission: car.transmission,
+        fuel: car.fuel,
+        location: car.location || 'Spain',
+      });
 
-  // ১. স্টেট ম্যানেজমেন্ট (লজিক অংশ)
+      if (response.status === 201) {
+        toast.success(`${car.vehicleName} added to Wishlist!`);
+        fireConfetti();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Server is not responding');
+    }
+  };
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pickupDate, setPickupDate] = useState(new Date());
@@ -63,7 +83,6 @@ const AllVehicles = () => {
     });
   };
 
-  // ৩. ফিল্টারিং লজিক (Schema অনুযায়ী)
   const filteredCars = useMemo(() => {
     let result = [...vehicles];
 
@@ -126,7 +145,6 @@ const AllVehicles = () => {
 
   return (
     <div className="bg-[#F8F9FA] min-h-screen font-sans">
-      {/* ১. সেই আগের প্রিমিয়াম হেডার ডিজাইন */}
       <div className="bg-gradient-to-r from-[#0a0a0a] to-[#1a1a1a] py-20 text-center text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
         <div className="relative z-10">
@@ -134,7 +152,6 @@ const AllVehicles = () => {
         </div>
       </div>
 
-      {/* ২. সেই আগের বড় টপ সার্চ বার */}
       <div className="container mx-auto -mt-12 px-4 relative z-20">
         <div className="bg-white p-2 rounded-[2rem] shadow-2xl shadow-orange-500/10 grid grid-cols-1 md:grid-cols-4 gap-2 items-center border border-gray-100/50 backdrop-blur-xl">
           <div className="px-6 py-3 border-r border-gray-50 flex flex-col gap-1">
@@ -291,8 +308,14 @@ const AllVehicles = () => {
                       >
                         {car.availability}
                       </span>
-                      <button className="absolute top-5 right-5 bg-white/90 backdrop-blur-sm p-3 rounded-2xl text-gray-400 hover:text-red-500 transition-all shadow-sm">
-                        <Heart className="w-4 h-4" />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addToWishlist(car);
+                        }}
+                        className="absolute top-5 right-5 bg-white/90 backdrop-blur-sm p-3 rounded-2xl text-gray-400 hover:text-red-500 transition-all shadow-sm z-30 group/heart"
+                      >
+                        <Heart className="w-4 h-4 group-hover/heart:fill-red-500 transition-colors" />
                       </button>
                     </div>
 
@@ -340,26 +363,42 @@ const AllVehicles = () => {
                         />
                       </div>
 
-                      <div className="flex items-center justify-between py-6 border-t border-gray-50 mt-auto">
-                        <div>
-                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                            Price Per Day
-                          </p>
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-[#1a1a1a] font-black text-2xl">
-                              ${car.pricePerDay}
-                            </span>
-                            <span className="text-gray-400 font-bold text-xs">
-                              /day
+                      {/* ক্লিন প্রাইস এবং বাটন সেকশন */}
+                      <div className="mt-auto pt-6 border-t border-gray-50">
+                        {/* উপরের লোকেশন এবং প্রাইস বক্স */}
+                        <div className="flex items-center justify-between p-4 bg-[#F8F9FA] rounded-2xl mb-4">
+                          {/* লোকেশন অংশ */}
+                          <div className="flex items-center gap-2">
+                            <MapPin size={18} className="text-gray-400" />
+                            <span className="text-gray-600 font-bold text-sm truncate max-w-[100px]">
+                              {car.location || 'Spain'}
                             </span>
                           </div>
+
+                          {/* প্রাইস অংশ */}
+                          <div className="flex items-center gap-1">
+                            <span className="text-[#E63946] font-black text-xl">
+                              ${car.pricePerDay}
+                            </span>
+                            <div className="flex flex-col ">
+                              <span className="text-gray-400 font-bold text-[16px] ">
+                                /
+                              </span>
+                              <span className="text-gray-400 font-bold text-[10px] uppercase -mt-4 ml-2">
+                                Day
+                              </span>
+                            </div>
+                          </div>
                         </div>
+
+                        {/* Rent Now বাটন */}
                         <Buttons
-                          onClick={() => navigate(`/VehicleDetails/${car._id}`)}
                           type="solid"
-                          className="!rounded-2xl !py-4 !px-6 cursor-pointer text-xs font-black shadow-lg shadow-orange-100 uppercase tracking-widest"
+                          onClick={() => navigate(`/VehicleDetails/${car._id}`)}
+                          className="cursor-pointer w-full font-black active:scale-[0.98]"
                         >
-                          Details
+                          <Calendar size={20} className="text-white/80" />
+                          Book Now
                         </Buttons>
                       </div>
                     </div>

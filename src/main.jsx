@@ -21,6 +21,7 @@ import VehicleDetails from './pages/VehiclesDetails.jsx';
 import AddVehicles from './pages/AddVehicles.jsx';
 import { ToastContainer } from 'react-toastify';
 import MyVehicles from './pages/MyVehicles.jsx';
+import Loading from './Loader/Loading.jsx';
 
 const router = createBrowserRouter([
   {
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: '*',
         element: <Page404 />,
+      },
+      {
+        path: 'loading',
+        element: <Loading />,
       },
       {
         path: '/VehicleDetails/:id',

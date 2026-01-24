@@ -47,7 +47,6 @@ const Login = () => {
         toast.success(`Welcome ${result.user.displayName}! 🚀`);
         setTimeout(() => navigate(from, { replace: true }), 1500);
       })
-      // eslint-disable-next-line no-unused-vars
       .catch((error) => {
         toast.error('গুগল লগইন বাতিল করা হয়েছে বা সমস্যা হয়েছে।');
       });

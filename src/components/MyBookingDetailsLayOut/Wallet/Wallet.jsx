@@ -12,7 +12,6 @@ import Buttons from '../../common/Buttons';
 import AddPaymentModal from '../../common/Modal/AddPaymentModal';
 
 const Wallet = () => {
-  // ১. মোডাল কন্ট্রোল করার জন্য স্টেট যোগ করা হয়েছে
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [cards] = useState([
@@ -108,7 +107,6 @@ const Wallet = () => {
                     className="flex-grow bg-gray-50 border border-gray-200 px-5 py-4 rounded-2xl text-sm font-black text-[#040720] focus:ring-2 ring-orange-500/10 outline-none transition-all"
                   />
                 </div>
-                {/* ২. বাটনে onClick ইভেন্ট যোগ করা হয়েছে */}
                 <Buttons
                   onClick={() => {
                     setIsModalOpen(true);
@@ -203,7 +201,6 @@ const Wallet = () => {
         </div>
       </div>
 
-      {/* ৩. মোডাল এখানে রেন্ডার করা হয়েছে */}
       <AddPaymentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

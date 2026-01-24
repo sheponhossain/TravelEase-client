@@ -42,7 +42,7 @@ const UpdateVehicle = ({ existingData, onCancel, onUpdate }) => {
         status: existingData.status || 'Available',
         description: existingData.description || '',
       });
-      setPreview(existingData.img); // আগের ইমেজ প্রিভিউ সেট করা
+      setPreview(existingData.img);
     }
   }, [existingData]);
 
@@ -63,14 +63,13 @@ const UpdateVehicle = ({ existingData, onCancel, onUpdate }) => {
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
 
-    // সিমুলেশন: সাকসেস হলে টোস্ট দেখাবে
     if (!formData.name || !formData.price) {
       toast.error('Please fill in the required fields!');
       return;
     }
 
     toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 1500)), // API call simulation
+      new Promise((resolve) => setTimeout(resolve, 1500)),
       {
         loading: 'Updating vehicle data...',
         success: <b>Vehicle updated successfully!</b>,
@@ -86,7 +85,6 @@ const UpdateVehicle = ({ existingData, onCancel, onUpdate }) => {
       }
     );
 
-    // After success, pass the data back to parent if needed
     setTimeout(() => {
       if (onUpdate) onUpdate(formData);
     }, 2000);

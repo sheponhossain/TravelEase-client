@@ -156,7 +156,7 @@ const VehicleDetails = () => {
     const fetchVehicleDetails = async () => {
       try {
         setLoading(true);
-        // এখানে id ব্যবহার করুন (যা useParams থেকে আসছে)
+
         const response = await fetch(
           `http://localhost:5000/api/vehicles/${id}`
         );
@@ -172,14 +172,12 @@ const VehicleDetails = () => {
     if (id) fetchVehicleDetails();
   }, [id]);
 
-  // --- Logic for Show More/Less Button Visibility ---
   useEffect(() => {
     if (!loading && contentRef.current) {
       const hasOverflow = contentRef.current.scrollHeight > 48;
       setShowButton(hasOverflow);
     }
   }, [content, loading]);
-  // images ডিফাইন করার লাইনটি এভাবে লিখুন
   const images =
     vehicle?.gallery && vehicle.gallery.length > 0
       ? vehicle.gallery
@@ -246,11 +244,11 @@ const VehicleDetails = () => {
     }
   };
   if (loading) {
-    return <div>Loading...</div>; // লোডিং স্ক্রিন
+    return <div>Loading...</div>;
   }
 
   if (!vehicle) {
-    return <div>Vehicle Not Found!</div>; // ডাটা না থাকলে এই মেসেজ
+    return <div>Vehicle Not Found!</div>;
   }
   return (
     <div className="w-7xl mx-auto px-4 pt-6">
@@ -291,7 +289,6 @@ const VehicleDetails = () => {
         </div>
       </div>
 
-      {/* Bottom Row: Location and Stats */}
       <div className="flex flex-wrap items-center gap-y-2 text-gray-500 text-sm">
         <div className="flex items-center gap-1.5 pr-4 border-r border-gray-300 last:border-0">
           <MapPin size={16} className="text-gray-400" />
@@ -323,7 +320,6 @@ const VehicleDetails = () => {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left: Image Gallery */}
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
               <div className="relative group mb-4 overflow-hidden rounded-lg">
@@ -385,7 +381,6 @@ const VehicleDetails = () => {
                   ref={contentRef}
                   className="text-gray-500 text-sm leading-6 text-justify"
                 >
-                  {/* এখানে ডাইনামিক ডেসক্রিপশন আসবে */}
                   {vehicle?.description ||
                     'No description available for this vehicle.'}
                 </div>
@@ -498,7 +493,6 @@ const VehicleDetails = () => {
                 <div className="relative">
                   <input
                     type="text"
-                    /* ডাটাবেস থেকে আসা লোকেশন এখানে বসবে */
                     defaultValue={vehicle?.location || 'Loading location...'}
                     className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 px-4 text-sm focus:ring-2 ring-[#040720]/10 outline-none transition-all"
                   />
@@ -510,20 +504,17 @@ const VehicleDetails = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                {/* তারিখ সিলেক্টর */}
                 <Flatpickr
                   value={pickupDate}
                   options={{
                     dateFormat: 'Y-m-d',
-                    minDate: 'today', // আজকের আগের তারিখ সিলেক্ট করা যাবে না
+                    minDate: 'today',
                   }}
                   onChange={(dates) => {
                     setPickupDate(dates[0]);
                   }}
                   className="w-full p-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-[#FF7000] focus:outline-none bg-white"
                 />
-
-                {/* সময় সিলেক্টর */}
                 <Flatpickr
                   options={{
                     enableTime: true,
@@ -531,9 +522,8 @@ const VehicleDetails = () => {
                     dateFormat: 'H:i',
                     time_24hr: true,
                   }}
-                  value={pickupTime} // বর্তমান সময় দেখাবে
+                  value={pickupTime}
                   onChange={(dates) => {
-                    // সময়টি HH:mm ফরম্যাটে সেভ করবে
                     const selectedTime = dates[0].toLocaleTimeString('en-GB', {
                       hour: '2-digit',
                       minute: '2-digit',

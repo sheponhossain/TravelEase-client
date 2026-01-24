@@ -29,7 +29,6 @@ const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // ২. গুগল লগইন ঠিক করা হয়েছে
   const signinGoogle = () => {
     setLoading(true);
     return signInWithPopup(auth, provider);

@@ -116,21 +116,16 @@ const Wishlist = () => {
                   </div>
                 </div>
 
-                {/* স্পেক্স বার */}
                 <div className="flex flex-wrap items-center gap-6 mb-8 mt-2">
-                  {/* ১. ট্রান্সমিশন (Manual/Auto) */}
                   <div className="flex items-center gap-2 text-xs font-bold text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
                     <Settings2 size={14} className="text-[#3D707A]" />{' '}
                     {car.transmission ? car.transmission : 'Auto'}
                   </div>
-
-                  {/* ২. ফুয়েল টাইপ (Petrol/Diesel/Electric) */}
                   <div className="flex items-center gap-2 text-xs font-bold text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
                     <Fuel size={14} className="text-[#3D707A]" />{' '}
                     {car.fuel ? car.fuel : 'Petrol'}
                   </div>
 
-                  {/* ৩. লোকেশন */}
                   <div className="flex items-center gap-2 text-xs font-bold text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
                     <MapPin size={14} className="text-[#3D707A]" />{' '}
                     {car.location ? car.location : 'Spain'}

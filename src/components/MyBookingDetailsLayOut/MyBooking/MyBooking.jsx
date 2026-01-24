@@ -24,7 +24,6 @@ const MyBooking = () => {
   const [openDropdown, setOpenDropdown] = useState(null); // ড্রপডাউন ট্র্যাক করার জন্য
   const navigate = useNavigate();
 
-  // ১. ডাটা ফেচ করা
   const fetchBookings = async () => {
     if (!user?.email) return;
     try {
@@ -103,7 +102,6 @@ const MyBooking = () => {
   return (
     <div className="w-full bg-gray-50/30 py-8 font-sans">
       <div className="mx-auto w-full md:w-11/12 lg:w-10/12">
-        {/* Stats Cards (আগের মতই থাকবে) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {stats.map((item, idx) => (
             <div
@@ -247,7 +245,6 @@ const MyBooking = () => {
                         </span>
                       </td>
 
-                      {/* অ্যাকশন বাটন লজিক */}
                       <td className="p-5 text-center relative">
                         <button
                           onClick={() =>

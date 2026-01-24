@@ -64,7 +64,6 @@ const AllVehicles = () => {
   const [selectedFuel, setSelectedFuel] = useState([]);
   const [sortBy, setSortBy] = useState('Latest Model');
 
-  // ২. ডাটাবেজ থেকে ডাটা ফেচ করা
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
@@ -213,7 +212,6 @@ const AllVehicles = () => {
       </div>
 
       <main className="container mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* ৩. সাইডবার ফিল্টার (আপনার দেয়া নতুন লজিক সহ) */}
         <aside className="lg:col-span-3">
           <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 sticky top-24 space-y-8">
             <div className="flex items-center gap-3 mb-2 font-black text-[#1a1a1a] uppercase text-sm tracking-widest">
@@ -259,7 +257,6 @@ const AllVehicles = () => {
           </div>
         </aside>
 
-        {/* ৪. লিস্টিং সেকশন (আগের সেই প্রিমিয়াম কার্ড ডিজাইন) */}
         <section className="lg:col-span-9">
           <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
             <p className="text-[#1a1a1a] text-sm font-bold">
@@ -340,7 +337,6 @@ const AllVehicles = () => {
                         {car.vehicleName}
                       </h3>
 
-                      {/* ক্লিন স্পেক্স গ্রিড */}
                       <div className="grid grid-cols-3 gap-3 mb-8 ">
                         <SpecItem
                           icon={<Settings size={14} />}
@@ -370,11 +366,8 @@ const AllVehicles = () => {
                         />
                       </div>
 
-                      {/* ক্লিন প্রাইস এবং বাটন সেকশন */}
                       <div className="mt-auto pt-6 border-t border-gray-50">
-                        {/* উপরের লোকেশন এবং প্রাইস বক্স */}
                         <div className="flex items-center justify-between p-4 bg-[#F8F9FA] rounded-2xl mb-4">
-                          {/* লোকেশন অংশ */}
                           <div className="flex items-center gap-2">
                             <MapPin size={18} className="text-gray-400" />
                             <span className="text-gray-600 font-bold text-sm truncate max-w-[100px]">
@@ -382,7 +375,6 @@ const AllVehicles = () => {
                             </span>
                           </div>
 
-                          {/* প্রাইস অংশ */}
                           <div className="flex items-center gap-1">
                             <span className="text-[#FF7000] font-black text-xl">
                               ${car.pricePerDay}
@@ -398,7 +390,6 @@ const AllVehicles = () => {
                           </div>
                         </div>
 
-                        {/* Rent Now বাটন */}
                         <Buttons
                           type="solid"
                           onClick={() => navigate(`/VehicleDetails/${car._id}`)}
@@ -415,7 +406,6 @@ const AllVehicles = () => {
             </motion.div>
           )}
 
-          {/* ৫. আগের পেজিনেশন ডিজাইন */}
           {!loading && filteredCars.length > 0 && (
             <div className="flex justify-center items-center mt-20 gap-4">
               <button className="w-12 h-12 flex items-center justify-center border border-gray-100 bg-white rounded-2xl hover:bg-[#1a1a1a] hover:text-white transition-all text-gray-400">
@@ -435,7 +425,6 @@ const AllVehicles = () => {
   );
 };
 
-// হেল্পার কম্পোনেন্টস (ডিজাইন মেইনটেইন করার জন্য)
 const FilterGroup = ({ title, options, selected, onToggle }) => (
   <div className="space-y-4">
     <p className="font-black text-[10px] uppercase text-gray-400 tracking-widest border-b border-gray-50 pb-2">

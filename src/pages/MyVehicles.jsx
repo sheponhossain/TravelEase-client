@@ -122,7 +122,6 @@ const MyVehicles = () => {
 
         <div className="relative z-10 flex flex-col items-center">
           <Heading className="text-white">MY GARAGE</Heading>
-          {/* বর্তমানে কোন ইউজার চেক হচ্ছে তার জন্য ছোট ইন্ডিকেটর */}
           <span className="text-white/30 text-[9px] font-bold uppercase tracking-[0.3em] mt-4">
             User: {user?.email}
           </span>
@@ -207,30 +206,20 @@ const MyVehicles = () => {
                     <h3 className="font-black text-[#1a1a1a] text-xl mb-6 tracking-tight truncate">
                       {car.vehicleName}
                     </h3>
-
-                    {/* Specs Grid */}
-                    {/* Specs Grid - Clean & Minimalist Version */}
                     <div className="grid grid-cols-3 gap-3 mb-8">
-                      {/* Transmission */}
                       <div className="flex flex-col items-center justify-center bg-[#F8F9FA] border border-gray-100/50 p-3.5 rounded-[1.5rem] hover:bg-white hover:shadow-md transition-all duration-300">
                         <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mb-2">
                           <Settings size={16} className="text-blue-500" />
                         </div>
-                        {/* <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">
-                        </span> */}
                         <span className="text-[11px] font-[1000] text-[#1a1a1a] mt-0.5 uppercase">
                           {car.transmission || 'N/A'}
                         </span>
                       </div>
 
-                      {/* Fuel */}
                       <div className="flex flex-col items-center justify-center bg-[#F8F9FA] border border-gray-100/50 p-3.5 rounded-[1.5rem] hover:bg-white hover:shadow-md transition-all duration-300">
                         <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center mb-2">
                           <Fuel size={16} className="text-[#FF7000]" />
                         </div>
-                        {/* <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">
-                          Fuel
-                        </span> */}
                         <span className="text-[11px] font-[1000] text-[#1a1a1a] mt-0.5 uppercase">
                           {car.fuel || 'N/A'}
                         </span>
@@ -241,17 +230,12 @@ const MyVehicles = () => {
                         <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mb-2">
                           <User size={16} className="text-green-600" />
                         </div>
-                        {/* <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">
-                          Seats
-                        </span> */}
                         <span className="text-[11px] font-[1000] text-[#1a1a1a] mt-0.5 uppercase">
                           {car.capacity?.split(' ')[0] || '4'} Persons
                         </span>
                       </div>
                     </div>
 
-                    {/* Price and Action Bar */}
-                    {/* Price and Action Bar */}
                     <div className="flex items-center justify-between py-6 border-t border-gray-50 mt-auto">
                       <div>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
@@ -268,7 +252,6 @@ const MyVehicles = () => {
                       </div>
 
                       <div className="flex gap-2">
-                        {/* View Details / Eye Button */}
                         <button
                           onClick={() => navigate(`/VehicleDetails/${car._id}`)}
                           className="bg-blue-50 text-blue-500 p-3 rounded-xl hover:bg-blue-500 hover:text-white transition-all group/eye"
@@ -332,11 +315,9 @@ const MyVehicles = () => {
                 try {
                   let finalImageUrl = selectedVehicle.coverImage;
 
-                  // যদি নতুন কোনো ফাইল সিলেক্ট করা হয়
                   if (imageFile) {
                     const imgData = new FormData();
                     imgData.append('image', imageFile);
-                    // আপনার সঠিক ImgBB API Key এখানে বসান
                     const IMGBB_API_KEY = 'YOUR_REAL_API_KEY';
                     const imgRes = await axios.post(
                       `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,
@@ -350,13 +331,11 @@ const MyVehicles = () => {
                     coverImage: finalImageUrl,
                   };
 
-                  // ডাটাবেজে আপডেট পাঠানো
                   await axios.put(
                     `http://localhost:5000/api/vehicles/${selectedVehicle._id}`,
                     updatedVehicle
                   );
 
-                  // UI আপডেট
                   setVehicles(
                     vehicles.map((v) =>
                       v._id === selectedVehicle._id ? updatedVehicle : v
@@ -365,7 +344,7 @@ const MyVehicles = () => {
 
                   toast.success('Updated successfully!');
                   setIsEditModalOpen(false);
-                  setImageFile(null); // রিসেট ফাইল
+                  setImageFile(null);
                 } catch (err) {
                   console.error(err);
                   toast.error('Update failed! Check console or API Key.');
@@ -375,7 +354,6 @@ const MyVehicles = () => {
               }}
               className="p-8 space-y-6"
             >
-              {/* Image Upload Section */}
               <div className="flex flex-col items-center gap-4 py-4 bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-200">
                 <div className="relative w-32 h-32 rounded-2xl overflow-hidden shadow-inner bg-white">
                   <img

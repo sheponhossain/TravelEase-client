@@ -60,7 +60,7 @@ const TopRatedSection = () => {
                 <img
                   src={car.coverImage}
                   alt={car.vehicleName}
-                  className="w-full h-full object-cover transition-transform duration-700"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute top-5 right-5 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5">
                   <Star size={14} className="text-[#FFB800] fill-[#FFB800]" />

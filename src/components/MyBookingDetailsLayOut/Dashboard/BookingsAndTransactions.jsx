@@ -110,7 +110,6 @@ const BookingsAndTransactions = () => {
                           Booking Schedule
                         </p>
                         <div className="flex flex-col">
-                          {/* তারিখ: যেমন 15 Sep 2023 */}
                           <p className="text-xs font-bold text-gray-600">
                             {new Date(booking.pickupDate).toLocaleDateString(
                               'en-GB',
@@ -121,7 +120,6 @@ const BookingsAndTransactions = () => {
                               }
                             )}
                           </p>
-                          {/* সময়: যেমন 10:30 PM */}
                           <p className="text-[10px] font-medium text-[#FF7000] mt-0.5">
                             Time: {booking.pickupTime}
                           </p>

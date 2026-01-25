@@ -40,7 +40,7 @@ const MyVehicles = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:5000/api/my-vehicles/${user.email}`
+          `https://travelease-server-eight.vercel.app/api/my-vehicles/${user.email}`
         );
         setVehicles(response.data);
       } catch (error) {
@@ -58,7 +58,7 @@ const MyVehicles = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/vehicles/${id}`)
+      .get(`https://travelease-server-eight.vercel.app/api/vehicles/${id}`)
       .then((res) => setVehicle(res.data))
       .catch((err) => console.log(err));
   }, [id]);
@@ -76,7 +76,7 @@ const MyVehicles = () => {
                 toast.dismiss(t.id);
                 try {
                   await axios.delete(
-                    `http://localhost:5000/api/vehicles/${id}`
+                    `https://travelease-server-eight.vercel.app/api/vehicles/${id}`
                   );
                   setVehicles(vehicles.filter((v) => v._id !== id));
                   toast.success('Vehicle removed!');
@@ -332,7 +332,7 @@ const MyVehicles = () => {
                   };
 
                   await axios.put(
-                    `http://localhost:5000/api/vehicles/${selectedVehicle._id}`,
+                    `https://travelease-server-eight.vercel.app/api/vehicles/${selectedVehicle._id}`,
                     updatedVehicle
                   );
 

@@ -14,7 +14,7 @@ const TopRatedSection = () => {
     const fetchTopRated = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/top-rated-vehicles'
+          'https://travelease-server-eight.vercel.app/api/top-rated-vehicles'
         );
         setTopVehicles(res.data);
       } catch (err) {

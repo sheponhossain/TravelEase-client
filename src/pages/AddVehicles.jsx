@@ -95,7 +95,7 @@ const AddVehicles = () => {
         };
 
         const response = await axios.post(
-          'http://localhost:5000/api/vehicles',
+          'https://travelease-server-eight.vercel.app/api/vehicles',
           vehicleData
         );
 

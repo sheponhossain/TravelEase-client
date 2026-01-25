@@ -16,7 +16,7 @@ const BookingsAndTransactions = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/my-bookings/${user.email}`
+          `https://travelease-server-eight.vercel.app/api/my-bookings/${user.email}`
         );
         const data = await response.json();
 

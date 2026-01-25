@@ -158,7 +158,7 @@ const VehicleDetails = () => {
         setLoading(true);
 
         const response = await fetch(
-          `http://localhost:5000/api/vehicles/${id}`
+          `https://travelease-server-eight.vercel.app/api/vehicles/${id}`
         );
         if (!response.ok) throw new Error('Vehicle not found');
         const data = await response.json();
@@ -211,13 +211,16 @@ const VehicleDetails = () => {
         createdAt: new Date(),
       };
 
-      const response = await fetch('http://localhost:5000/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData),
-      });
+      const response = await fetch(
+        'https://travelease-server-eight.vercel.app/api/bookings',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(bookingData),
+        }
+      );
 
       const contentType = response.headers.get('content-type');
 

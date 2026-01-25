@@ -35,16 +35,19 @@ const AllVehicles = () => {
       return navigate('/login');
     }
     try {
-      const response = await axios.post('http://localhost:5000/api/wishlist', {
-        userEmail: user.email,
-        vehicleId: car._id,
-        vehicleName: car.vehicleName,
-        price: car.pricePerDay,
-        image: car.coverImage,
-        transmission: car.transmission,
-        fuel: car.fuel,
-        location: car.location || 'Spain',
-      });
+      const response = await axios.post(
+        'https://travelease-server-eight.vercel.app/api/wishlist',
+        {
+          userEmail: user.email,
+          vehicleId: car._id,
+          vehicleName: car.vehicleName,
+          price: car.pricePerDay,
+          image: car.coverImage,
+          transmission: car.transmission,
+          fuel: car.fuel,
+          location: car.location || 'Spain',
+        }
+      );
 
       if (response.status === 201) {
         toast.success(`${car.vehicleName} added to Wishlist!`);
@@ -68,7 +71,9 @@ const AllVehicles = () => {
     const fetchVehicles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/vehicles');
+        const response = await axios.get(
+          'https://travelease-server-eight.vercel.app/api/vehicles'
+        );
         setVehicles(response.data);
       } catch (error) {
         console.error('Error fetching vehicles:', error);

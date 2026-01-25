@@ -29,7 +29,7 @@ const MyBooking = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/my-bookings/${user.email}`
+        `https://travelease-server-eight.vercel.app/api/my-bookings/${user.email}`
       );
       const data = await response.json();
       setBookings(data.reverse());
@@ -49,7 +49,7 @@ const MyBooking = () => {
     if (window.confirm('Are you sure you want to delete this booking?')) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/bookings/${id}`,
+          `https://travelease-server-eight.vercel.app/api/bookings/${id}`,
           {
             method: 'DELETE',
           }

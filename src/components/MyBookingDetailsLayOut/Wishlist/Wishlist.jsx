@@ -27,7 +27,7 @@ const Wishlist = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:5000/api/wishlist/${user.email}`
+        `https://travelease-server-eight.vercel.app/api/wishlist/${user.email}`
       );
       setWishlistItems(response.data);
       console.log(response);
@@ -45,7 +45,9 @@ const Wishlist = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/wishlist/${id}`);
+      await axios.delete(
+        `https://travelease-server-eight.vercel.app/api/wishlist/${id}`
+      );
       setWishlistItems(wishlistItems.filter((item) => item._id !== id));
       toast.success('Removed from wishlist');
     } catch (error) {
